@@ -1,0 +1,8 @@
+{
+  "label": "DAST",
+  "position": 4,
+  "link": {
+    "type": "generated-index",
+    "description": "Dynamic Application Security Testing (DAST) tools for runtime security analysis and penetration testing."
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "label": "Data-Processing",
+  "position": 7,
+  "link": {
+    "type": "generated-index",
+    "description": "Data processing and streaming tools including Apache Kafka, Airflow, and Spark for building robust data pipelines."
+  }
+}

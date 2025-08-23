@@ -1,0 +1,8 @@
+{
+  "label": "SCA (Software Composition Analysis)",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "Software Composition Analysis tools for identifying vulnerabilities in third-party dependencies and open source components."
+  }
+}

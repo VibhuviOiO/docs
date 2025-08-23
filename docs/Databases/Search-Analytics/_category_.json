@@ -1,0 +1,8 @@
+{
+  "label": "Search-Analytics",
+  "position": 4,
+  "link": {
+    "type": "generated-index",
+    "description": "Learn how to dockerize and run search and analytics tools including Elasticsearch, Kibana, and Apache Druid for data analysis."
+  }
+}

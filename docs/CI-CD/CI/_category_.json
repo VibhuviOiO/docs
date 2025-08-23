@@ -1,0 +1,8 @@
+{
+  "label": "Continuous Integration",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "Set up continuous integration pipelines with Jenkins, GitHub Actions, GitLab CI/CD, and other CI tools for automated testing and validation."
+  }
+}
