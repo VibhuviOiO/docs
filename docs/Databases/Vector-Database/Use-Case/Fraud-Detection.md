@@ -28,40 +28,82 @@ This project builds a **semantic search-powered fraud detection system** using:
 ## 📁 Project Structure
 
 ```
-
 milvus-fraud-detection/
 ├── backend/
 │   ├── main.py
-│   ├── milvus\_client.py
+│   ├── milvus_client.py
+│   ├── embedder.py
+│   ├── models.py
 │   ├── requirements.txt
 │   └── Dockerfile
 ├── frontend/
 │   ├── src/
-│   │   ├── App.jsx
+│   │   ├── api.js
 │   │   ├── App.css
-│   │   └── main.jsx
+│   │   ├── App.jsx
+│   │   ├── index.css
+│   │   ├── main.jsx
+│   │   └── assets/
+│   │       └── react.svg
+│   ├── public/
 │   ├── index.html
 │   ├── package.json
+│   ├── package-lock.json
 │   ├── vite.config.js
+│   ├── eslint.config.js
+│   ├── README.md
 │   └── Dockerfile
+├── data/
 ├── docker-compose.yml
 
-````
+```
+```bash
+# Create root
+mkdir -p milvus-fraud-detection && cd milvus-fraud-detection
+
+# ---------------------------
+# Backend
+# ---------------------------
+mkdir -p backend
+touch backend/{main.py,milvus_client.py,embedder.py,models.py,requirements.txt,Dockerfile}
+
+# ---------------------------
+# Frontend
+# ---------------------------
+mkdir -p frontend/src/assets frontend/public
+
+# Frontend config files
+touch frontend/{index.html,package.json,package-lock.json,vite.config.js,eslint.config.js,README.md,Dockerfile}
+
+# Frontend src files
+touch frontend/src/{api.js,App.css,App.jsx,index.css,main.jsx}
+touch frontend/src/assets/react.svg
+
+# ---------------------------
+# Data folder (empty for now)
+# ---------------------------
+mkdir data
+
+# ---------------------------
+# Root files
+# ---------------------------
+touch docker-compose.yml
+```
 
 ---
 
 ## ⚙️ Backend Setup
 
-### `backend/requirements.txt`
+`backend/requirements.txt`
 
 ```txt
 fastapi==0.115.1
 uvicorn==0.30.0
 pymilvus==2.4.0
 sentence-transformers==2.2.2
-````
+```
 
-### `backend/milvus_client.py`
+`backend/milvus_client.py`
 
 ```python
 from pymilvus import connections, Collection, CollectionSchema, FieldSchema, DataType
@@ -123,7 +165,7 @@ def search_similar(description: str):
     } for match in results[0]]
 ```
 
-### `backend/main.py`
+`backend/main.py`
 
 ```python
 from fastapi import FastAPI, Request
@@ -154,8 +196,7 @@ async def search(req: Request):
     data = await req.json()
     return {"matches": search_similar(data["description"])}
 ```
-
-### `backend/Dockerfile`
+`backend/Dockerfile`
 
 ```Dockerfile
 FROM python:3.10-slim
@@ -172,7 +213,7 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 
 ## 💻 Frontend Setup (Vite + React)
 
-### `frontend/src/App.jsx`
+`frontend/src/App.jsx`
 
 ```jsx
 import { useState } from 'react';
@@ -226,9 +267,103 @@ function App() {
 export default App;
 ```
 
+`frontend/api.js`
+```js
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+console.log("Backend URL:", BACKEND_URL);  // ✅ Debug check
+
+export async function searchDescription(description) {
+  const response = await fetch(`${BACKEND_URL}/search`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ description }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Search failed");
+  }
+
+  const data = await response.json();
+  return { results: data.matches || [] };
+}
+```
+
+`frontend/src/index.css`
+```css
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+```
 ---
 
-### `frontend/src/main.jsx`
+`frontend/src/main.jsx`
 
 ```jsx
 import React from 'react';
@@ -245,7 +380,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 
 ---
 
-### `frontend/App.css`
+`frontend/src/App.css`
 
 ```css
 #root {
@@ -291,10 +426,58 @@ button {
   border-bottom: 1px solid #eee;
 }
 ```
+`frontend/index.html`
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + React</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+```
 
 ---
+`frontend/eslint.config.js`
+```js
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import { defineConfig, globalIgnores } from 'eslint/config'
 
-### `frontend/vite.config.js`
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{js,jsx}'],
+    extends: [
+      js.configs.recommended,
+      reactHooks.configs['recommended-latest'],
+      reactRefresh.configs.vite,
+    ],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        ecmaFeatures: { jsx: true },
+        sourceType: 'module',
+      },
+    },
+    rules: {
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+    },
+  },
+])
+```
+
+`frontend/vite.config.js`
 
 ```js
 import { defineConfig } from 'vite';
@@ -307,10 +490,39 @@ export default defineConfig({
   },
 });
 ```
-
+`frontend/package.json`
+```json
+{
+  "name": "frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.29.0",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.5.2",
+    "eslint": "^9.29.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.2.0",
+    "vite": "^5.2.0"
+  }
+}
+```
 ---
 
-### `frontend/Dockerfile`
+`frontend/Dockerfile`
 
 ```Dockerfile
 FROM node:20-alpine
@@ -327,7 +539,7 @@ CMD ["serve", "-s", "dist", "-l", "3000"]
 
 ---
 
-## 🐳 `docker-compose.yml`
+`docker-compose.yml`
 
 ```yaml
 version: '3.8'
@@ -374,7 +586,7 @@ docker-compose up --build
 
 📦 Try it Out
 
-#### `Insert new fraud record:`
+`Insert new fraud record:`
 
 ```bash
 curl -X POST http://localhost:8000/insert \
@@ -382,7 +594,7 @@ curl -X POST http://localhost:8000/insert \
   -d '{"id": 2, "description": "unauthorized ATM withdrawal in delhi"}'
 ```
 
-### Search for similar activity:
+`Search for similar activity:`
 
 ```bash
 curl -X POST http://localhost:8000/search \
@@ -391,7 +603,7 @@ curl -X POST http://localhost:8000/search \
 ```
 ---
 
-## 🧠 Output
+`Output`
 
 ```json
 {
@@ -409,11 +621,6 @@ curl -X POST http://localhost:8000/search \
   ]
 }
 ```
-
----
-Frontend: http://localhost:5173
-
-#### API docs (optional): http://localhost:8000/docs
 ---
 ```Search On UI :```
 ```bash

@@ -70,6 +70,12 @@ output:
 ```
 
 ---
+#### Use Case
 
 - [Restaurant Recommendation App with Milvus, FastAPI, and React](./Use-Case/Resuturrent-recommendation.md)
 - [ Fraud Detection with Milvus, FastAPI & React](./Use-Case/Fraud-Detection.md)
+#### References
+
+* [Marqo Documentation](https://docs.marqo.ai)  
+* [TechCrunch: Meet Marqo, an open source vector search engine for AI applications](https://techcrunch.com/2023/08/16/meet-marqo-an-open-source-vector-search-engine-for-ai-applications/)  
+* [DB-Engines: Marqo](https://db-engines.com/en/system/Marqo)  

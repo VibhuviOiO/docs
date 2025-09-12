@@ -154,3 +154,7 @@ Domain	Use Case Description
 
 ### Use-cases
 - [Personalized Recommendation ](./Use-Case/Personalized-Recommendation-System.md)
+
+#### References
+* [FAISS Documentation](https://faiss.ai/)  
+* [Flask Documentation](https://flask.palletsprojects.com/) 

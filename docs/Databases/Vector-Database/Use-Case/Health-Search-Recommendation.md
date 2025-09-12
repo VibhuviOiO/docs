@@ -13,16 +13,15 @@ keywords:
   - react frontend
 ---
 
-# 🧪 HealthSearch Recommender
 
-A Complete Guide to Building a **Semantic Search Engine for Health Articles Using FastAPI, Weaviate, and React**
+# A Complete Guide to Building a **Semantic Search Engine for Health Articles Using FastAPI, Weaviate, and React**
 
 This project walks through every step from document ingestion, embedding generation using SentenceTransformers, and querying with Weaviate, to displaying results in a user-friendly React interface. Ideal for healthcare AI assistants, symptom checkers, or wellness product recommendation engines.
 
 
 ---
 
-## 🏧 Architecture
+### Architecture
 
 ```
                            ┌───────────┐
@@ -46,7 +45,7 @@ This project walks through every step from document ingestion, embedding generat
 
 ---
 
-## 📁 Folder Structure
+### 📁 Folder Structure
 
 ```
 healthsearch-recommender/
@@ -58,70 +57,104 @@ healthsearch-recommender/
 │   │   ├── config.py
 │   │   ├── models.py
 │   │   └── embedding.py
-│   └── scripts/
-│       └── ingest.py
+│   ├── scripts/
+│   │   └── ingest.py
+│   ├── Dockerfile
+│   └── requirements.txt
 ├── frontend/
-│   └── src/
-│       ├── App.jsx
-│       ├── main.jsx
-│   └── index.html
-│   └── package.json
+│   ├── src/
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   ├── index.css
+│   │   └── App.css
+│   ├── index.html
+│   ├── package.json
+│   └── dockerfile
 ├── data/
 │   └── health_articles.json
 ├── docker-compose.yml
-└── Dockerfile
+└── README.md
+
+```
+```bash
+
+mkdir -p healthsearch-recommender
+cd healthsearch-recommender
+
+
+touch docker-compose.yml README.md
+
+
+mkdir -p backend/app backend/scripts
+touch backend/Dockerfile backend/requirements.txt
+touch backend/app/api.py backend/app/config.py backend/app/embedding.py \
+      backend/app/main.py backend/app/models.py backend/app/search.py
+touch backend/scripts/ingest.py
+
+
+mkdir -p data
+touch data/health_articles.json
+
+
+mkdir -p frontend/src frontend/public frontend/node_modules
+touch frontend/dockerfile frontend/eslint.config.js frontend/index.html \
+      frontend/nginx.conf frontend/package.json frontend/package-lock.json \
+      frontend/README.md frontend/vite.config.js
+
+
+touch frontend/src/App.css frontend/src/App.jsx frontend/src/App.test.js \
+      frontend/src/index.css frontend/src/logo.svg frontend/src/main.jsx \
+      frontend/src/reportWebVitals.js frontend/src/setupTests.js
+
+
+touch frontend/public/favicon.ico frontend/public/index.html \
+      frontend/public/logo192.png frontend/public/logo512.png \
+      frontend/public/manifest.json frontend/public/robots.txt
+
 ```
 
----
 
-## ⚙️ Backend Highlights (`FastAPI + Weaviate`)
 
-### 🔄 Ingestion (`scripts/ingest.py`)
+### ⚙️ Backend Setup (FastAPI + Weaviate)
 
-```python
-import json, weaviate
-from app.embedding import get_embedding
-from app.config import WEAVIATE_URL
+`backend/app/main.py`
+```py
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from app.api import router as api_router
 
-client = weaviate.Client(url=WEAVIATE_URL)
+app = FastAPI(title="HealthSearch Recommender")
 
-def setup_schema():
-    schema = {
-        "class": "HealthArticle",
-        "properties": [
-            {"name": "title", "dataType": ["text"]},
-            {"name": "content", "dataType": ["text"]}
-        ],
-        "vectorizer": "none"
-    }
-    existing_classes = client.schema.get().get("classes", [])
-    if not any(cls["class"] == "HealthArticle" for cls in existing_classes):
-        client.schema.create_class(schema)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # restrict in prod
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-def ingest():
-    setup_schema()
-
-    with open("data/health_articles.json") as f:
-        data = json.load(f)
-
-    seen = set()
-    for doc in data:
-        key = (doc["title"], doc["content"])
-        if key in seen:
-            continue
-        seen.add(key)
-        vector = get_embedding(doc["content"])
-        client.data_object.create({
-            "title": doc["title"],
-            "content": doc["content"]
-        }, "HealthArticle", vector=vector)
+app.include_router(api_router, prefix="")
 ```
 
----
+`backend/app/api.py`
+```py
+from fastapi import APIRouter
+from pydantic import BaseModel
+from app.search import perform_search
 
-### 🔍 Semantic Search (`search.py`)
+router = APIRouter()
 
-```python
+class SearchRequest(BaseModel):
+    query: str
+
+@router.post("/search")
+def search_articles(req: SearchRequest):
+    return perform_search(req.query)
+```
+
+`backend/app/search.py`
+
+```py
 import weaviate
 from app.embedding import get_embedding
 from app.config import WEAVIATE_URL
@@ -144,12 +177,9 @@ def perform_search(query: str):
             unique.append(a)
     return unique
 ```
+`backend/app/embedding.py`
 
----
-
-## 🧠 Embeddings
-
-```python
+```py
 from sentence_transformers import SentenceTransformer
 
 model = SentenceTransformer("all-MiniLM-L6-v2")
@@ -157,21 +187,93 @@ model = SentenceTransformer("all-MiniLM-L6-v2")
 def get_embedding(text: str):
     return model.encode(text).tolist()
 ```
-
----
-
-### 📦 Config (`config.py`)
-
-```python
+`backend/app/config.py`
+```bash
 WEAVIATE_URL = "http://weaviate:8080"
 ```
 
----
+`backend/app/models.py`
+```py
+from pydantic import BaseModel
+from typing import List
 
-## ⚛️ Frontend in React
+class Article(BaseModel):
+    title: str
+    content: str
 
+class SearchResponse(BaseModel):
+    results: List[Article]
+```
+
+`backend/scripts/ingest.py`
+```py
+import json, weaviate
+from app.embedding import get_embedding
+from app.config import WEAVIATE_URL
+
+client = weaviate.Client(url=WEAVIATE_URL)
+
+def setup_schema():
+    schema = {
+        "class": "HealthArticle",
+        "properties": [
+            {"name": "title", "dataType": ["text"]},
+            {"name": "content", "dataType": ["text"]}
+        ],
+        "vectorizer": "none"
+    }
+    existing_classes = client.schema.get().get("classes", [])
+    if not any(cls["class"] == "HealthArticle" for cls in existing_classes):
+        client.schema.create_class(schema)
+
+def ingest():
+    setup_schema()
+    with open("data/health_articles.json") as f:
+        data = json.load(f)
+
+    seen = set()
+    for doc in data:
+        key = (doc["title"], doc["content"])
+        if key in seen:
+            continue
+        seen.add(key)
+        vector = get_embedding(doc["content"])
+        client.data_object.create({
+            "title": doc["title"],
+            "content": doc["content"]
+        }, "HealthArticle", vector=vector)
+
+if __name__ == "__main__":
+    ingest()
+```
+`backend/requirements.txt`
+```txt
+fastapi
+uvicorn
+weaviate-client
+sentence-transformers
+pydantic
+
+```
+`backend/dockerfile`
+```dockerfile
+FROM python:3.12-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN  pip install --no-cache-dir -r requirements.txt
+
+COPY app/ app/
+COPY scripts/ scripts/
+
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+### ⚛️ Frontend Setup (React + Vite)
+
+`frontend/src/App.jsx`
 ```jsx
-// App.jsx
 import { useState } from "react";
 
 function App() {
@@ -189,15 +291,18 @@ function App() {
   };
 
   return (
-    <div className="app">
+    <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
       <h1>🧪 HealthSearch Recommender</h1>
       <input
         type="text"
         placeholder="e.g. headache remedies"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
+        style={{ padding: "8px", width: "300px" }}
       />
-      <button onClick={handleSearch}>Search</button>
+      <button onClick={handleSearch} style={{ marginLeft: "10px" }}>
+        Search
+      </button>
       <ul>
         {results.map((item, i) => (
           <li key={i}>
@@ -212,102 +317,373 @@ function App() {
 
 export default App;
 ```
+`frontend/src/main.jsx`
 
----
+```jsx
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
 
-## 🐳 Docker Compose Setup
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+```
+`frontend/src/App.test.js`
+```js
+import { render, screen } from '@testing-library/react';
+import App from './App';
 
-```yaml
-version: '3.9'
+test('renders learn react link', () => {
+  render(<App />);
+  const linkElement = screen.getByText(/learn react/i);
+  expect(linkElement).toBeInTheDocument();
+});
+```
+
+`frontend/src/index.css`
+```css
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+```
+
+
+`frontend/src/app.css`
+```css
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+```
+`frontend/src/reportWebVitals.js `
+```js
+const reportWebVitals = onPerfEntry => {
+  if (onPerfEntry && onPerfEntry instanceof Function) {
+    import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
+      getCLS(onPerfEntry);
+      getFID(onPerfEntry);
+      getFCP(onPerfEntry);
+      getLCP(onPerfEntry);
+      getTTFB(onPerfEntry);
+    });
+  }
+};
+
+export default reportWebVitals;
+
+```
+
+`frontend/src/setupTests.js`
+```js
+
+
+frontend/package.json
+```json
+{
+  "name": "healthsearch-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.0.0",
+    "vite": "^4.4.0"
+  }
+}
+```
+#### 📦 Sample Dataset
+
+`data/health_articles.json`
+```json
+[
+  {
+    "title": "Natural Remedies for Headaches",
+    "content": "Hydration, rest, and magnesium-rich foods can help reduce headaches naturally."
+  },
+  {
+    "title": "Flu Symptoms and Treatments",
+    "content": "Common flu symptoms include fever, cough, sore throat, and fatigue. Rest and fluids are key."
+  },
+  {
+    "title": "Boosting Immunity with Vitamin C",
+    "content": "Fruits like oranges, kiwi, and bell peppers are rich in Vitamin C and support immunity."
+  },
+  {
+    "title": "Managing Stress for Better Health",
+    "content": "Mindfulness, exercise, and proper sleep reduce stress and improve overall health."
+  },
+  {
+    "title": "Natural Cold Remedies",
+    "content": "Ginger tea, honey, and steam inhalation are effective for soothing cold symptoms."
+  }
+]
+```
+`frontend/dockerfile`
+```dockerfile
+# Step 1: Build React app
+FROM node:22-slim AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+# Step 2: Serve with Nginx
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+```
+`frontend/eslint.config.js`
+```js
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+
+export default [
+  { ignores: ['dist'] },
+  {
+    files: ['**/*.{js,jsx}'],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        ecmaFeatures: { jsx: true },
+        sourceType: 'module',
+      },
+    },
+    plugins: {
+      'react-hooks': reactHooks,
+      'react-refresh': reactRefresh,
+    },
+    rules: {
+      ...js.configs.recommended.rules,
+      ...reactHooks.configs.recommended.rules,
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      'react-refresh/only-export-components': [
+        'warn',
+        { allowConstantExport: true },
+      ],
+    },
+  },
+]
+```
+
+`frontend/index.html`
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🧪 HealthSearch Recommender</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+```
+`nginx.conf`
+```conf
+server {
+    listen 80;
+
+    server_name localhost;
+
+    # Proxy API requests to backend
+    location /api/ {
+        proxy_pass http://backend:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Serve frontend app
+    location / {
+        root /usr/share/nginx/html;
+        index index.html;
+        try_files $uri /index.html;
+    }
+}
+```
+`frontend/package.json`
+```json
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "vite"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.0.1",
+    "vite": "^7.1.3"
+  }
+}
+```
+`healthsearch-recommender/vite.config.js`
+```js
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+})
+```
+`healthsearch-recommender/docker-compose.yml`
+```bash
+version: "3.9"
+
 services:
-  backend:
-    build: ./backend
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./data:/app/data
-    depends_on:
-      - weaviate
-
   weaviate:
-    image: semitechnologies/weaviate:1.21.2
+    image: semitechnologies/weaviate:1.31.1
     ports:
       - "8080:8080"
     environment:
-      - QUERY_DEFAULTS_LIMIT=25
-      - AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED=true
-      - PERSISTENCE_DATA_PATH=/var/lib/weaviate
-      - DEFAULT_VECTORIZER_MODULE=none
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: "true"
+      ENABLE_MODULES: none
+      DEFAULT_VECTORIZER_MODULE: none
     volumes:
       - weaviate_data:/var/lib/weaviate
 
-  frontend:
-    build: ./frontend
+  backend:
+    build:
+      context: ./backend
     ports:
-      - "3000:3000"
+      - "8001:8000"        # backend reachable on localhost:8001 (mainly for curl)
+    depends_on:
+      - weaviate
+    volumes:
+      - ./data:/app/data
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:80"          # app at http://localhost:3000
+    depends_on:
+      - backend
 
 volumes:
   weaviate_data:
-```
 
-### backend/Dockerfile
-`Dockerfile`
+```
+`▶️ Run the Project`
 ```bash
-FROM python:3.10-slim
+# 1. Build and start all services
+docker-compose up --build
 
-WORKDIR /app
-
-COPY backend/requirements.txt .
-RUN pip install -r requirements.txt
-
-COPY backend /app
-
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# 2. Ingest health articles
+docker exec -it healthsearch-recommender-backend-1 python scripts/ingest.py
 ```
-### frontend/Dockerfile
-`Dockerfile`
-```bash
-FROM node:18
+`🌐 Access the Services`
+| Component       | URL                                                      | Description                     |
+| --------------- | -------------------------------------------------------- | ------------------------------- |
+| 💻 React UI     | [http://localhost:3000](http://localhost:3000)           | User Interface built with React |
+| ⚙️ FastAPI Docs | [http://localhost:8000/docs](http://localhost:8000/docs) | Swagger/OpenAPI UI              |
+| 🪶 Weaviate     | [http://localhost:8080](http://localhost:8080)           | Vector Database API             |
 
-WORKDIR /app
 
-COPY frontend/package.json frontend/package-lock.json ./
-RUN npm install
+`Try queries like:`
+```txt
+"flu symptoms"
 
-COPY frontend ./
-RUN npm run build
+"natural remedies for cold"
 
-EXPOSE 3000
-CMD ["npm", "run", "dev"]
+"treat headache"
 ```
+`Reference`
+
+- [When Large Language Models Meet Vector Databases: A Survey](https://arxiv.org/html/2402.01763v1?utm_source=chatgpt.com)
 
 
 ---
 
-## 🧪 Testing It
-
-* Run the full stack:
-
-  ```bash
-  docker-compose up --build
-  ```
-
-* Visit:
-
-  * `http://localhost:3000` → React UI
-  * `http://localhost:8000/docs` → FastAPI Docs
-
-* Try searching: `"flu symptoms"`, `"natural remedies for cold"`, `"treat headache"`
-
----
-## 💬 Conclusion
-
-By combining **FastAPI**, **Weaviate**, and **React**, you’ve built a fully functioning **AI-powered search engine** for health recommendations.
-This pattern is applicable across many domains — 
-- News
-- Education 
-- E-commerce
-- Even
-- Legal search.
-
-**Semantic search isn't the future. It's the present.** And now, it's in your hands.

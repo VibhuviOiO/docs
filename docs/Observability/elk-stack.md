@@ -1,13 +1,15 @@
 ---
 sidebar_position: 5
-title: ELK Stack
-description: ELK Stack (Elasticsearch, Logstash, Kibana) is a powerful platform for searching, analyzing, and visualizing log data in real time. Learn how to set up ELK Stack with Docker.
+title: ELK Stack (Elastic Stack)
+description: ELK Stack (Elasticsearch, Logstash, Kibana) is a powerful platform for searching, analyzing, and visualizing log data in real time with comprehensive observability features.
 slug: /Observability/ELKStack
 keywords:
   - ELK Stack
+  - Elastic Stack
   - Elasticsearch
   - Logstash
   - Kibana
+  - Beats
   - log management
   - log analysis
   - data visualization
@@ -16,9 +18,33 @@ keywords:
   - centralized logging
 ---
 
-# 📊 ELK Stack - Elasticsearch, Logstash, and Kibana
+# 📊 Comprehensive Log Management with ELK Stack
 
-**ELK Stack** is a collection of three open-source products: **Elasticsearch**, **Logstash**, and **Kibana**. Together they provide a powerful platform for **searching**, **analyzing**, and **visualizing log data** in real time.
+**ELK Stack** (now called **Elastic Stack**) is a collection of open-source products: **Elasticsearch**, **Logstash**, **Kibana**, and **Beats**. Together they provide a **powerful platform** for **searching**, **analyzing**, and **visualizing** log data in real time with **comprehensive observability** features.
+
+## Key Features
+
+- **Elasticsearch**: Distributed search and analytics engine
+- **Logstash**: Data processing pipeline for ingesting and transforming logs
+- **Kibana**: Data visualization and exploration platform
+- **Beats**: Lightweight data shippers for various data sources
+- **Real-time Analytics**: Process and analyze data as it arrives
+
+## Use Cases
+
+- **Centralized Logging**: Aggregate logs from multiple applications and services
+- **Security Analytics**: Detect threats and analyze security events
+- **Application Performance Monitoring**: Track application metrics and performance
+- **Business Intelligence**: Extract insights from operational data
+
+---
+
+## 🧰 Prerequisites
+
+- **Docker & Docker Compose** installed
+- **8GB+ RAM** recommended for Elasticsearch
+- **SSD storage** for better performance
+- **Network access** for log collection from multiple sources
 
 ---
 

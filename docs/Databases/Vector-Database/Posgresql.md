@@ -123,5 +123,11 @@ LIMIT 1;
 
 ---
 
-### Use-cases
+#### Use-cases
 - [Building a Transaction Search App using FastAPI, React, and PostgreSQL + pgvector](./Use-Case/Transaction-Logs.md)
+
+#### Reference
+
+* [PostgreSQL Official Documentation](https://www.postgresql.org/docs/)
+* [Ankane/pgvector Docker Image](https://hub.docker.com/r/ankane/pgvector)
+* [pgvector: AI-powered PostgreSQL extension](https://ankane.org/pgvector)

@@ -26,47 +26,79 @@ This app recommends restaurants based on user queries (like _"best dosa in Banga
 
 ---
 
-## 📁 Folder Structure
+### 📁 Folder Structure
 
 ```bash
 restaurant-recommender/
-├── app/
-│   ├── main.py
-│   ├── milvus_client.py
-│   ├── embedding.py
-│   ├── utils.py
-│   └── data/
-│       └── restaurants.csv
+├── backend/
+│   ├── app/
+│   │   ├── data/
+│   │   │   └── restaurants.csv
+│   │   ├── embedding.py
+│   │   ├── main.py
+│   │   ├── milvus_client.py
+│   │   └── utils.py
+│   ├── Dockerfile
+│   └── requirements.txt
 ├── frontend/
 │   ├── src/
+│   │   ├── App.css
 │   │   ├── App.jsx
-│   │   └── main.jsx
+│   │   ├── index.css
+│   │   ├── main.jsx
+│   │   └── assets/
+│   │       └── react.svg
+│   ├── public/
 │   ├── index.html
 │   ├── package.json
-│   └── vite.config.js
-├── Dockerfile         # Backend Dockerfile
+│   ├── package-lock.json
+│   ├── vite.config.js
+│   ├── eslint.config.js
+│   ├── Dockerfile
+│   └── README.md
 ├── docker-compose.yml
-├── requirements.txt
+├── myenv/
+└── volumes/
+
 ````
+```bash
+# Create root project folder
+mkdir -p restaurant-recommender && cd restaurant-recommender
 
----
+# ---------------------------
+# Backend
+# ---------------------------
+mkdir -p backend/app/data
 
-## ⚙️ Prepare Restaurant Data
+# Backend files
+touch backend/Dockerfile
+touch backend/requirements.txt
+touch backend/app/{embedding.py,main.py,milvus_client.py,utils.py}
+touch backend/app/data/restaurants.csv   # dataset
 
-Create your data CSV file at: `app/data/restaurants.csv`
+# ---------------------------
+# Frontend
+# ---------------------------
+mkdir -p frontend/src/assets frontend/public
 
-```csv
-id,name,description,cuisine,location
-1,Hotel Dosa Palace,Authentic crispy dosas,South Indian,Bangalore
-2,Biryani House,Spicy Hyderabadi biryani,Indian,Hyderabad
-3,Pasta Delight,Fresh Italian pastas,Italian,Chennai
+# Frontend config + main files
+touch frontend/{index.html,package.json,package-lock.json,vite.config.js,eslint.config.js,Dockerfile,README.md}
+
+# Frontend src files
+touch frontend/src/{App.css,App.jsx,index.css,main.jsx}
+touch frontend/src/assets/react.svg
+
+# ---------------------------
+# Root level
+# ---------------------------
+touch docker-compose.yml
+
+# Environment & volumes (empty dirs)
+mkdir myenv volumes
 ```
-
 ---
 
-## 🧠 Generate Embeddings
-
-`app/embedding.py`
+`backend/app/embedding.py`
 
 ```python
 from sentence_transformers import SentenceTransformer
@@ -79,9 +111,7 @@ def generate_embedding(text: str):
 
 ---
 
-## 📊 Load and Preprocess Data
-
-`app/utils.py`
+`backend/app/utils.py`
 
 ```python
 import pandas as pd
@@ -102,9 +132,7 @@ def load_restaurants(csv_path):
 
 ---
 
-## 🗃️ Milvus Integration
-
-`app/milvus_client.py`
+`backend/app/milvus_client.py`
 
 ```python
 from pymilvus import connections, Collection, FieldSchema, CollectionSchema, DataType, utility
@@ -164,9 +192,7 @@ def search(embedding: list[float]):
 
 ---
 
-## 🚀 FastAPI Backend
-
-`app/main.py`
+`backend/app/main.py`
 
 ```python
 from fastapi import FastAPI, Query
@@ -196,11 +222,31 @@ def recommend(query: str = Query(...)):
     return {"recommendations": milvus_client.search(emb)}
 ```
 
+`backend/dockerfile`
+
+```Dockerfile
+FROM python:3.10-slim
+
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+
+`Create your data CSV file at`: `backend/app/data/restaurants.csv`
+
+```csv
+id,name,description,cuisine,location
+1,Hotel Dosa Palace,Authentic crispy dosas,South Indian,Bangalore
+2,Biryani House,Spicy Hyderabadi biryani,Indian,Hyderabad
+3,Pasta Delight,Fresh Italian pastas,Italian,Chennai
+```
 ---
 
-## ⚛️ React Frontend (Vite)
 
-### `frontend/src/App.jsx`
+## ⚛️ React Frontend (Vite)
+`frontend/src/App.jsx`
 
 ```jsx
 import { useState } from "react";
@@ -239,8 +285,7 @@ export default App;
 ```
 
 ---
-
-### `frontend/src/main.jsx`
+`frontend/src/main.jsx`
 
 ```jsx
 import React from "react";
@@ -253,10 +298,125 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   </React.StrictMode>
 );
 ```
+`frontend/src/app.css`
+```css
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
 
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+```
+`frontend/src/index.css`
+```css
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+```
 ---
 
-### `frontend/index.html`
+`frontend/index.html`
 
 ```html
 <!DOCTYPE html>
@@ -275,7 +435,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 
 ---
 
-### `frontend/package.json`
+`frontend/package.json`
 
 ```json
 {
@@ -299,8 +459,41 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 ```
 
 ---
+`frontend/eslint.config.js`
+```js
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import { defineConfig, globalIgnores } from 'eslint/config'
 
-### `frontend/vite.config.js`
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{js,jsx}'],
+    extends: [
+      js.configs.recommended,
+      reactHooks.configs['recommended-latest'],
+      reactRefresh.configs.vite,
+    ],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        ecmaFeatures: { jsx: true },
+        sourceType: 'module',
+      },
+    },
+    rules: {
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+    },
+  },
+])
+```
+
+
+`frontend/vite.config.js`
 
 ```js
 import { defineConfig } from 'vite'
@@ -316,21 +509,7 @@ export default defineConfig({
 
 ---
 
-## 🐳 Dockerize Everything
-
-### `Dockerfile` (for backend)
-
-```Dockerfile
-FROM python:3.10-slim
-
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-COPY . .
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
-```
-
-### `frontend/Dockerfile`
+`frontend/Dockerfile`
 
 ```Dockerfile
 # Stage 1: Build
@@ -348,7 +527,7 @@ CMD ["nginx", "-g", "daemon off;"]
 
 ---
 
-### `docker-compose.yml`
+`restaurant-recommender/docker-compose.yml`
 
 ```yaml
 version: "3.9"

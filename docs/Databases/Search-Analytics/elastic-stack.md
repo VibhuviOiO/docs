@@ -145,7 +145,6 @@ docker ps
 
 ## Test Elasticsearch
 
-### Using curl
 
 `Test Elasticsearch connection:`
 ```bash
@@ -207,6 +206,8 @@ curl -X GET "localhost:9200/products/_search" -H 'Content-Type: application/json
 
 `Install the Elasticsearch client:`
 ```bash
+python3 -m venv venv
+source venv/bin/activate
 pip install elasticsearch
 ```
 
@@ -384,7 +385,7 @@ python elasticsearch_test.py
 ## Access Kibana Dashboard
 
 1. Open your browser and go to `http://localhost:5601`
-2. Go to **Management > Stack Management > Index Patterns**
+2. Go to **Management > Stack Management > Data View**
 3. Create index pattern for your data (e.g., `ecommerce*`)
 4. Go to **Analytics > Discover** to explore your data
 5. Create visualizations in **Analytics > Visualize**
@@ -405,119 +406,6 @@ echo "2024-01-15 10:32:30 WARN High memory usage detected: 85%" >> logs/app.log
 ```bash
 curl -X GET "localhost:9200/logs-*/_search" | jq .
 ```
-
----
-
-## Advanced Configuration
-
-### Elasticsearch Cluster
-
-`docker-compose.yml for 3-node cluster:`
-```yaml
-version: '3.8'
-
-services:
-  es01:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
-    container_name: es01
-    environment:
-      - node.name=es01
-      - cluster.name=es-docker-cluster
-      - discovery.seed_hosts=es02,es03
-      - cluster.initial_master_nodes=es01,es02,es03
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - xpack.security.enabled=false
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - es01-data:/usr/share/elasticsearch/data
-    ports:
-      - 9200:9200
-
-  es02:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
-    container_name: es02
-    environment:
-      - node.name=es02
-      - cluster.name=es-docker-cluster
-      - discovery.seed_hosts=es01,es03
-      - cluster.initial_master_nodes=es01,es02,es03
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - xpack.security.enabled=false
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - es02-data:/usr/share/elasticsearch/data
-
-  es03:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
-    container_name: es03
-    environment:
-      - node.name=es03
-      - cluster.name=es-docker-cluster
-      - discovery.seed_hosts=es01,es02
-      - cluster.initial_master_nodes=es01,es02,es03
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - xpack.security.enabled=false
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - es03-data:/usr/share/elasticsearch/data
-
-volumes:
-  es01-data:
-  es02-data:
-  es03-data:
-```
-
----
-
-## Monitoring and Maintenance
-
-### Cluster Health
-
-```bash
-# Cluster health
-curl -X GET "localhost:9200/_cluster/health?pretty"
-
-# Node info
-curl -X GET "localhost:9200/_nodes?pretty"
-
-# Index stats
-curl -X GET "localhost:9200/_stats?pretty"
-```
-
-### Index Management
-
-```bash
-# List indices
-curl -X GET "localhost:9200/_cat/indices?v"
-
-# Delete old indices
-curl -X DELETE "localhost:9200/logs-2024.01.01"
-
-# Create index template
-curl -X PUT "localhost:9200/_index_template/logs-template" -H 'Content-Type: application/json' -d'
-{
-  "index_patterns": ["logs-*"],
-  "template": {
-    "settings": {
-      "number_of_shards": 1,
-      "number_of_replicas": 0
-    }
-  }
-}'
-```
-
 ---
 
 ## Common Use Cases
@@ -528,4 +416,8 @@ curl -X PUT "localhost:9200/_index_template/logs-template" -H 'Content-Type: app
 - **Security Analytics**: Threat detection, compliance monitoring
 - **Business Intelligence**: Sales analytics, customer insights, operational metrics
 
-✅ Elastic Stack is now running in Docker and ready for your search and analytics needs!
+✅ Elastic Stack is now running in Docker and ready for your search and analytics needs!## Referen
+ces
+
+* [ChromaDB](https://docs.trychroma.com)
+* [SentenceTransformers](https://www.sbert.net/)

@@ -106,3 +106,8 @@ curl -X POST http://localhost:8080/v1/graphql -H "Content-Type: application/json
 ### Use-cases
 - [A Complete Guide to Building a Semantic Search Engine for Health Articles Using FastAPI, Weaviate, and React](./Use-Case/Health-Search-Recommendation.md)
 
+
+#### References
+
+* [Weaviate](https://weaviate.io/developers/weaviate) - An open-source vector database for smart, semantic search.  
+  Weaviate is designed for storing, indexing, and searching high-dimensional vectors. You can run it locally with Docker Compose, define schemas via REST, insert objects, and perform semantic search using GraphQL.

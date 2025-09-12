@@ -323,4 +323,8 @@ Each guide includes:
 - Plan for network latency changes
 - Review security and compliance requirements
 
-Choose the database that best fits your current needs and growth plans. Remember, you can always migrate later as your requirements evolve!
+Choose the database that best fits your current needs and growth plans. Remember, you can always migrate later as your requirements evolve!#
+# References
+
+* [ChromaDB](https://docs.trychroma.com)
+* [SentenceTransformers](https://www.sbert.net/)

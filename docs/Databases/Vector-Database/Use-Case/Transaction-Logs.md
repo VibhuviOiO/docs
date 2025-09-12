@@ -28,92 +28,59 @@ In this blog post, we’ll walk through how to build an intelligent Transaction 
 ## 🧱 Folder Structure
 
 ```
+🧱 Folder Structure
 pgvector-transaction-search/
 ├── backend/
+│   ├── app/
+│   │   ├── db.py
+│   │   ├── main.py
+│   │   ├── models.py
+│   │   └── vector_utils.py
 │   ├── Dockerfile
-│   ├── main.py
-│   ├── db.py
-│   ├── vector_utils.py
-│   └── requirements.txt
+│   └── wait-for-it.sh
 ├── frontend/
 │   ├── Dockerfile
 │   ├── index.html
 │   ├── package.json
 │   ├── vite.config.js
+│   ├── public/
 │   └── src/
 │       ├── App.jsx
-│       └── main.jsx
+│       ├── main.jsx
+│       └── components/
+│           └── SearchForm.jsx
 ├── docker-compose.yml
+├── package.json
+├── package-lock.json
+└── README.md
+```
+---
+```bash
+# Create root project
+mkdir pgvector-transaction-search && cd pgvector-transaction-search
+
+# Backend
+mkdir -p backend/app
+touch backend/Dockerfile backend/wait-for-it.sh
+touch backend/app/{db.py,main.py,models.py,vector_utils.py}
+
+# Frontend
+mkdir -p frontend/src/components frontend/public
+touch frontend/Dockerfile frontend/index.html frontend/package.json frontend/vite.config.js
+touch frontend/src/{App.jsx,main.jsx}
+touch frontend/src/components/SearchForm.jsx
+
+# Root files
+touch docker-compose.yml package.json package-lock.json README.md
 ```
 
 ---
 
-## ⚙️ 1. Setting Up PostgreSQL with pgvector
-
-We’ll use a pre-built pgvector Docker image.
-
-```yaml
-# docker-compose.yml
-version: '3.8'
-services:
-  db:
-    image: ankane/pgvector
-    container_name: pgvector-db
-    environment:
-      POSTGRES_DB: vectordb
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-
-  backend:
-    build: ./backend
-    ports:
-      - "8000:8000"
-    depends_on:
-      - db
-    environment:
-      DATABASE_URL: postgresql://postgres:postgres@db:5432/vectordb
-
-  frontend:
-    build: ./frontend
-    ports:
-      - "3000:3000"
-    depends_on:
-      - backend
-
-volumes:
-  pgdata:
-```
 
 ---
 
-## 🚀 2. Backend (FastAPI + pgvector + SentenceTransformers)
-
-### `backend/Dockerfile`
-
-```Dockerfile
-FROM python:3.11
-
-WORKDIR /app
-COPY . .
-RUN pip install --no-cache-dir -r requirements.txt
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
-```
-
-### `backend/requirements.txt`
-
-```
-fastapi
-uvicorn
-psycopg2-binary
-python-dotenv
-sentence-transformers
-```
-
-### `backend/db.py`
+### Backend (FastAPI + pgvector + SentenceTransformers)
+`backend/db.py`
 
 ```python
 import psycopg2
@@ -136,7 +103,7 @@ def init_db():
     conn.commit()
 ```
 
-### `backend/vector_utils.py`
+`backend/vector_utils.py`
 
 ```python
 from sentence_transformers import SentenceTransformer
@@ -146,7 +113,7 @@ def get_embedding(text: str) -> list:
     return model.encode(text).tolist()
 ```
 
-### `backend/main.py`
+`backend/main.py`
 
 ```python
 from fastapi import FastAPI
@@ -201,78 +168,217 @@ def search_similar(tx: Transaction):
         conn.rollback()
         return {"error": str(e)}
 ```
+`backend/requirements.txt`
 
----
+```txt
+fastapi
+uvicorn
+psycopg2-binary
+python-dotenv
+sentence-transformers
+```
 
-## 🎨 3. Frontend (React + Vite)
-
-### `frontend/Dockerfile`
+`backend/Dockerfile`
 
 ```Dockerfile
-FROM node:18
+FROM python:3.11
 
 WORKDIR /app
 COPY . .
-RUN npm install
-EXPOSE 3000
-CMD ["npm", "run", "dev"]
+RUN pip install --no-cache-dir -r requirements.txt
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
+`wait-for-it.sh`
+```sh
+#!/usr/bin/env bash
+# Use this script to test if a given TCP host/port are available
 
-### `frontend/vite.config.js`
+WAITFORIT_cmdname=${0##*/}
 
-```js
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+echoerr() { if [[ $WAITFORIT_QUIET -ne 1 ]]; then echo "$@" 1>&2; fi }
 
-export default defineConfig({
-  plugins: [react()],
-  server: {
-    host: '0.0.0.0',
-    port: 3000,
-  },
-})
-```
-
-### `frontend/package.json`
-
-```json
+usage()
 {
-  "name": "transaction-search-ui",
-  "version": "1.0.0",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "start": "vite preview"
-  },
-  "dependencies": {
-    "axios": "^1.6.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-react": "^4.0.0",
-    "vite": "^5.0.0"
-  }
+    cat << USAGE >&2
+Usage:
+    $WAITFORIT_cmdname host:port [-s] [-t timeout] [-- command args]
+    -h HOST | --host=HOST       Host or IP under test
+    -p PORT | --port=PORT       TCP port under test
+                                Alternatively, you specify the host and port as host:port
+    -s | --strict               Only execute subcommand if the test succeeds
+    -q | --quiet                Don't output any status messages
+    -t TIMEOUT | --timeout=TIMEOUT
+                                Timeout in seconds, zero for no timeout
+    -- COMMAND ARGS             Execute command with args after the test finishes
+USAGE
+    exit 1
 }
+
+wait_for()
+{
+    if [[ $WAITFORIT_TIMEOUT -gt 0 ]]; then
+        echoerr "$WAITFORIT_cmdname: waiting $WAITFORIT_TIMEOUT seconds for $WAITFORIT_HOST:$WAITFORIT_PORT"
+    else
+        echoerr "$WAITFORIT_cmdname: waiting for $WAITFORIT_HOST:$WAITFORIT_PORT without a timeout"
+    fi
+    WAITFORIT_start_ts=$(date +%s)
+    while :
+    do
+        if [[ $WAITFORIT_ISBUSY -eq 1 ]]; then
+            nc -z $WAITFORIT_HOST $WAITFORIT_PORT
+            WAITFORIT_result=$?
+        else
+            (echo -n > /dev/tcp/$WAITFORIT_HOST/$WAITFORIT_PORT) >/dev/null 2>&1
+            WAITFORIT_result=$?
+        fi
+        if [[ $WAITFORIT_result -eq 0 ]]; then
+            WAITFORIT_end_ts=$(date +%s)
+            echoerr "$WAITFORIT_cmdname: $WAITFORIT_HOST:$WAITFORIT_PORT is available after $((WAITFORIT_end_ts - WAITFORIT_start_ts)) seconds"
+            break
+        fi
+        sleep 1
+    done
+    return $WAITFORIT_result
+}
+
+wait_for_wrapper()
+{
+    # In order to support SIGINT during timeout: http://unix.stackexchange.com/a/57692
+    if [[ $WAITFORIT_QUIET -eq 1 ]]; then
+        timeout $WAITFORIT_BUSYTIMEFLAG $WAITFORIT_TIMEOUT $0 --quiet --child --host=$WAITFORIT_HOST --port=$WAITFORIT_PORT --timeout=$WAITFORIT_TIMEOUT &
+    else
+        timeout $WAITFORIT_BUSYTIMEFLAG $WAITFORIT_TIMEOUT $0 --child --host=$WAITFORIT_HOST --port=$WAITFORIT_PORT --timeout=$WAITFORIT_TIMEOUT &
+    fi
+    WAITFORIT_PID=$!
+    trap "kill -INT -$WAITFORIT_PID" INT
+    wait $WAITFORIT_PID
+    WAITFORIT_RESULT=$?
+    if [[ $WAITFORIT_RESULT -ne 0 ]]; then
+        echoerr "$WAITFORIT_cmdname: timeout occurred after waiting $WAITFORIT_TIMEOUT seconds for $WAITFORIT_HOST:$WAITFORIT_PORT"
+    fi
+    return $WAITFORIT_RESULT
+}
+
+# process arguments
+while [[ $# -gt 0 ]]
+do
+    case "$1" in
+        *:* )
+        WAITFORIT_hostport=(${1//:/ })
+        WAITFORIT_HOST=${WAITFORIT_hostport[0]}
+        WAITFORIT_PORT=${WAITFORIT_hostport[1]}
+        shift 1
+        ;;
+        --child)
+        WAITFORIT_CHILD=1
+        shift 1
+        ;;
+        -q | --quiet)
+        WAITFORIT_QUIET=1
+        shift 1
+        ;;
+        -s | --strict)
+        WAITFORIT_STRICT=1
+        shift 1
+        ;;
+        -h)
+        WAITFORIT_HOST="$2"
+        if [[ $WAITFORIT_HOST == "" ]]; then break; fi
+        shift 2
+        ;;
+        --host=*)
+        WAITFORIT_HOST="${1#*=}"
+        shift 1
+        ;;
+        -p)
+        WAITFORIT_PORT="$2"
+        if [[ $WAITFORIT_PORT == "" ]]; then break; fi
+        shift 2
+        ;;
+        --port=*)
+        WAITFORIT_PORT="${1#*=}"
+        shift 1
+        ;;
+        -t)
+        WAITFORIT_TIMEOUT="$2"
+        if [[ $WAITFORIT_TIMEOUT == "" ]]; then break; fi
+        shift 2
+        ;;
+        --timeout=*)
+        WAITFORIT_TIMEOUT="${1#*=}"
+        shift 1
+        ;;
+        --)
+        shift
+        WAITFORIT_CLI=("$@")
+        break
+        ;;
+        --help)
+        usage
+        ;;
+        *)
+        echoerr "Unknown argument: $1"
+        usage
+        ;;
+    esac
+done
+
+if [[ "$WAITFORIT_HOST" == "" || "$WAITFORIT_PORT" == "" ]]; then
+    echoerr "Error: you need to provide a host and port to test."
+    usage
+fi
+
+WAITFORIT_TIMEOUT=${WAITFORIT_TIMEOUT:-15}
+WAITFORIT_STRICT=${WAITFORIT_STRICT:-0}
+WAITFORIT_CHILD=${WAITFORIT_CHILD:-0}
+WAITFORIT_QUIET=${WAITFORIT_QUIET:-0}
+
+# Check to see if timeout is from busybox?
+WAITFORIT_TIMEOUT_PATH=$(type -p timeout)
+WAITFORIT_TIMEOUT_PATH=$(realpath $WAITFORIT_TIMEOUT_PATH 2>/dev/null || readlink -f $WAITFORIT_TIMEOUT_PATH)
+
+WAITFORIT_BUSYTIMEFLAG=""
+if [[ $WAITFORIT_TIMEOUT_PATH =~ "busybox" ]]; then
+    WAITFORIT_ISBUSY=1
+    # Check if busybox timeout uses -t flag
+    # (recent Alpine versions don't support -t anymore)
+    if timeout &>/dev/stdout | grep -q -e '-t '; then
+        WAITFORIT_BUSYTIMEFLAG="-t"
+    fi
+else
+    WAITFORIT_ISBUSY=0
+fi
+
+if [[ $WAITFORIT_CHILD -gt 0 ]]; then
+    wait_for
+    WAITFORIT_RESULT=$?
+    exit $WAITFORIT_RESULT
+else
+    if [[ $WAITFORIT_TIMEOUT -gt 0 ]]; then
+        wait_for_wrapper
+        WAITFORIT_RESULT=$?
+    else
+        wait_for
+        WAITFORIT_RESULT=$?
+    fi
+fi
+
+if [[ $WAITFORIT_CLI != "" ]]; then
+    if [[ $WAITFORIT_RESULT -ne 0 && $WAITFORIT_STRICT -eq 1 ]]; then
+        echoerr "$WAITFORIT_cmdname: strict mode, refusing to execute subprocess"
+        exit $WAITFORIT_RESULT
+    fi
+    exec "${WAITFORIT_CLI[@]}"
+else
+    exit $WAITFORIT_RESULT
+fi
 ```
 
-### `frontend/index.html`
+---
 
-```html
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Transaction Search App</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
-</html>
-```
+### 🎨 3. Frontend (React + Vite)
 
-### `frontend/src/main.jsx`
+`frontend/src/main.jsx`
 
 ```jsx
 import React from "react";
@@ -286,8 +392,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 );
 ```
 
-### `frontend/src/App.jsx`
-
+`frontend/src/App.jsx`
 ```jsx
 import React, { useState } from "react";
 import axios from "axios";
@@ -376,7 +481,175 @@ function App() {
 export default App;
 ```
 
+`frontend/src/api.js`
+```js
+import axios from "axios";
+
+const API_BASE = "http://localhost:8000";  // adjust if using Docker externally
+
+export const addTransaction = async (data) => {
+  return axios.post(`${API_BASE}/add/`, data);
+};
+
+export const searchTransactions = async (data) => {
+  return axios.post(`${API_BASE}/search/`, data);
+};
+```
+
+
+`frontend/src/components/SearchForm.jsx`
+```jsx
+import React, { useState } from "react";
+import axios from "axios";
+
+function SearchForm() {
+  const [description, setDescription] = useState("");
+  const [results, setResults] = useState([]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const res = await axios.post("http://localhost:8000/search/", {
+      user_id: 0,
+      amount: 0,
+      description,
+    });
+    setResults(res.data);
+  };
+
+  return (
+    <div>
+      <form onSubmit={handleSubmit}>
+        <input value={description} onChange={e => setDescription(e.target.value)} placeholder="Search by description" />
+        <button type="submit">Search</button>
+      </form>
+      <ul>
+        {results.map((r) => (
+          <li key={r[0]}>{r[3]} (Score: {r[4].toFixed(4)})</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default SearchForm;
+```
+
+
+`frontend/index.html`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Transaction Search App</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+```
+
+`frontend/vite.config.js`
+
+```js
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    host: '0.0.0.0',
+    port: 3000,
+  },
+})
+```
+
+`frontend/package.json`
+
+```json
+{
+  "name": "transaction-search-ui",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "start": "vite preview"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.0.0",
+    "vite": "^5.0.0"
+  }
+}
+```
+
+`frontend/Dockerfile`
+
+```Dockerfile
+FROM node:18
+
+WORKDIR /app
+COPY . .
+RUN npm install
+EXPOSE 3000
+CMD ["npm", "run", "dev"]
+```
+
 ---
+`pgvector-transaction-search/package.json`
+```json
+{
+  "dependencies": {
+    "axios": "^1.10.0"
+  }
+}
+```
+
+`pgvector-transaction-search`
+
+/docker-compose.yml`
+
+```yaml
+version: '3.8'
+services:
+  db:
+    image: ankane/pgvector
+    container_name: pgvector-db
+    environment:
+      POSTGRES_DB: vectordb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/vectordb
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
+```
+
 
 ### `🚀 Run with Docker`
 
@@ -407,7 +680,7 @@ shimla
 
 ---
 
-## ✅ Final Result Example
+### ✅ Final Result Example
 
 ```
 Results:
@@ -418,7 +691,7 @@ ID   User ID   Amount   Description         Distance
 
 ---
 
-## 💼 Why is This Useful for Clients?
+### 💼 Why is This Useful
 
 * 🔍 **Semantic Search**: Search descriptions like “tea bill” and find “Starbucks coffee” – thanks to embeddings.
 * 🧾 **Finance Dashboards**: Smart filters for past spending.

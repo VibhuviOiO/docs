@@ -1,7 +1,7 @@
 ---
-sidebar_position: 9
+sidebar_position: 8
 title: Marqo
-description: Marqo is an end-to-end vector search engine that handles embedding generation and vector search. Learn how to dockerize and run Marqo for AI-powered search.
+description: Marqo is an end-to-end vector search engine that handles embedding generation and vector search. Learn how to dockerize and run Marqo for AI-powered semantic search.
 slug: /VectorDB/Marqo
 keywords:
   - Marqo
@@ -16,22 +16,28 @@ keywords:
   - neural search
 ---
 
-## 🚀 AI-Powered Vector Search with Marqo: Docker Setup and Integration
-**Marqo** is an end-to-end vector search engine that simplifies **embedding generation** and **vector search**. It is ideal for developers looking to implement **AI-powered semantic search** without the complexity of managing embeddings manually. With Marqo, you can build intelligent search systems for e-commerce, content discovery, and more.
+# 🚀 AI-Powered Vector Search with Marqo: Docker Setup, Indexing & Semantic Search
 
+[Marqo](https://marqo.ai) is a state-of-the-art, end-to-end **vector search engine** that automatically handles **embedding generation** and **vector search**.  
 
+It enables developers to implement **semantic search, content discovery, and recommendation systems** without manually managing embeddings or training pipelines.
 
-### 🧰 Prerequisites
-Before starting, ensure you have the following installed:
+---
 
-- **Docker**: Version 20.10 or later
-- **Docker Compose**: Version 1.29 or later
-- **Python**: Version 3.8 or later (for Python integration)
-- **pip**: Python package manager
+## 🧰 Prerequisites
 
-### Set Up Marqo with Docker Compose
-Create a docker-compose.yml` file to define the Marqo service.
-```bash
+Before starting, ensure the following are installed:
+
+- [Docker](https://docs.docker.com/) ≥ 20.10  
+- [Docker Compose](https://docs.docker.com/compose/) ≥ 1.29  
+
+---
+
+## 🔧 Setting Up Marqo with Docker Compose
+
+### Create `docker-compose.yml`
+
+```yaml
 version: '3.8'
 
 services:
@@ -45,7 +51,7 @@ services:
       - marqo-data:/opt/marqo
     environment:
       MARQO_MAX_CUDA_MODEL_MEMORY: 4  # Limit GPU memory usage
-      MARQO_MAX_CPU_MODEL_MEMORY: 4  # Limit CPU memory usage
+      MARQO_MAX_CPU_MODEL_MEMORY: 4   # Limit CPU memory usage
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8882/health"]
       interval: 30s
@@ -55,78 +61,115 @@ services:
 
 volumes:
   marqo-data:
-```
-Start Marqo
-Run the following command to start Marqo:
-```bash
-docker compose up -d
-```
+````
 
-Verify the Setup
-
-Wait for few minutes Check if the container is running and healthy:
+`Start Marqo`
 
 ```bash
-docker ps
+docker compose up -d
 ```
 
-- curl http://localhost:8882/health
+`Verify the setup:`
 
-
-### Install the Marqo Python Client
-To interact with Marqo programmatically, install the official Python client.
-
-Install the Client
 ```bash
-pip install marqo
+docker ps
 ```
 
-### Add Configuration and Perform Basic Operations
-Once Marqo is running, you can use its REST API or Python client to create indexes, add documents, and perform searches.
-
-Example REST API Operations
-Create an Index
 ```bash
-curl -X POST "http://localhost:8882/indexes/products" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "settings": {
-      "model": "sentence-transformers/all-MiniLM-L6-v2",
-      "normalize_embeddings": true
-    }
-  }'
+curl http://localhost:8882/health
 ```
 
-Add Documents
-```bash
-curl -X POST "http://localhost:8882/indexes/products/documents" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "documents": [
-      {
-        "_id": "1",
-        "title": "Wireless Bluetooth Headphones",
-        "description": "High-quality wireless headphones with noise cancellation",
-        "category": "Electronics",
-        "price": 199.99
-      },
-      {
-        "_id": "2", 
-        "title": "Gaming Mechanical Keyboard",
-        "description": "RGB backlit mechanical keyboard for gaming",
-        "category": "Electronics",
-        "price": 129.99
-      }
-    ]
-  }'
+`Expected output:`
+
+```json
+{
+  "status": "green",
+  "inference": {"status": "green"},
+  "backend": {
+    "status": "green",
+    "memoryIsAvailable": true,
+    "storageIsAvailable": true
+  }
+}
 ```
-Search Documents
-```bash
-curl -X POST "http://localhost:8882/indexes/products/search" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "q": "wireless audio devices",
-    "limit": 5
-  }'
-```
+
 ---
+
+### 📁 Index Creation & Document Management
+
+`Create an Unstructured Index`
+
+```bash
+curl -X POST "http://localhost:8882/indexes/test-index" \
+  -H "Content-Type: application/json" \
+  -d '{
+        "type": "unstructured"
+      }'
+```
+
+`Response:`
+
+```json
+{"acknowledged": true, "index": "test-index"}
+```
+
+---
+
+`Add Documents`
+
+```bash
+curl -X POST "http://localhost:8882/indexes/test-index/documents" \
+  -H "Content-Type: application/json" \
+  -d '{
+        "documents": [
+          {"_id": "1", "text": "The Eiffel Tower is a famous landmark in France"},
+          {"_id": "2", "text": "The Colosseum is a historic landmark in Italy"}
+        ],
+        "tensor_fields": ["text"]
+      }'
+```
+
+---
+
+`Perform a Semantic Search`
+
+```bash
+curl -X POST "http://localhost:8882/indexes/test-index/search" \
+  -H "Content-Type: application/json" \
+  -d '{
+        "q": "famous landmark in France"
+      }'
+```
+
+`Example response:`
+
+```json
+{
+  "hits": [
+    {"_id": "1", "text": "The Eiffel Tower is a famous landmark in France"}
+  ],
+  "query": "famous landmark in France",
+  "limit": 10,
+  "offset": 0,
+  "processingTimeMs": 78
+}
+```
+
+✅ The query successfully retrieves the most semantically relevant document.
+
+
+## 🔍 What You’ll See / Interpret Results
+
+- **Index Creation**: A new index named `products` will be created.
+- **Document Addition**: Documents will be added to the index, and embeddings will be generated automatically.
+- **Search Results**: Semantic search results ranked by relevance.
+
+---
+
+## 📚 References  
+
+- [Marqo Documentation](https://docs.marqo.ai)
+
+- [TechCrunch: Meet Marqo, an open source vector search engine for AI applications](https://techcrunch.com/2023/08/16/meet-marqo-an-open-source-vector-search-engine-for-ai-applications/)
+
+- [DB-Engines: Listing Marqo as an open source vector-based search engine](https://db-engines.com/en/system/Marqo)

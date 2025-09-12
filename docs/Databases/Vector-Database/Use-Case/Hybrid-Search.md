@@ -27,37 +27,110 @@ Learn how to build a hybrid semantic search system using MongoDB's vector search
 ## 🗂️ Project Structure
 
 ```
-
 qa-hybrid-search/
 ├── backend/
 │   ├── app.py
-│   ├── embed\_utils.py
+│   ├── embed_utils.py
 │   ├── utils/
-│   │   └── llm\_utils.py
+│   │   └── llm_utils.py
 │   ├── requirements.txt
-│   └── Dockerfile
+│   ├── Dockerfile
+│   ├── scripts/
+│   │   ├── load_squad.py
+│   │   └── dev-v2.0.json
+│   └── wheels/
+│       └── nvidia_cudnn_cu12-9.5.1.17-py3-none-manylinux_2_28_x86_64.whl
 ├── frontend/
 │   ├── src/
-│   │   ├── App.jsx
-│   │   └── main.jsx
+│   │   ├── App.css
+│   │   ├── App.tsx
+│   │   ├── index.css
+│   │   ├── main.tsx
+│   │   ├── vite-env.d.ts
+│   │   └── assets/
+│   │       └── react.svg
+│   ├── public/
 │   ├── index.html
 │   ├── package.json
-│   └── Dockerfile
-├── scripts/
-│   └── load\_squad.py
-│   └── dev-v2.0.json
-├── .env
+│   ├── package-lock.json
+│   ├── vite.config.ts
+│   ├── tsconfig.json
+│   ├── tsconfig.app.json
+│   ├── tsconfig.node.json
+│   ├── eslint.config.js
+│   ├── Dockerfile
+│   └── nginx.conf
 ├── docker-compose.yml
+└── README.md
 
-````
+
+```
+```bash
+# Create root folder
+mkdir -p qa-hybrid-search && cd qa-hybrid-search
+
+# ---------------------------
+# Backend
+# ---------------------------
+mkdir -p backend/utils backend/scripts backend/wheels
+
+# Backend files
+touch backend/app.py
+touch backend/embed_utils.py
+touch backend/requirements.txt
+touch backend/Dockerfile
+
+# Backend utils
+touch backend/utils/llm_utils.py
+
+# Backend scripts
+touch backend/scripts/load_squad.py
+touch backend/scripts/dev-v2.0.json
+
+# Backend wheels (placeholder, since real .whl is binary)
+touch backend/wheels/nvidia_cudnn_cu12-9.5.1.17-py3-none-manylinux_2_28_x86_64.whl
+
+# ---------------------------
+# Frontend
+# ---------------------------
+mkdir -p frontend/src/assets frontend/public
+
+# Frontend main files
+touch frontend/index.html
+touch frontend/package.json
+touch frontend/package-lock.json
+touch frontend/vite.config.ts
+touch frontend/tsconfig.json
+touch frontend/tsconfig.app.json
+touch frontend/tsconfig.node.json
+touch frontend/eslint.config.js
+touch frontend/Dockerfile
+touch frontend/nginx.conf
+
+# Frontend src files
+touch frontend/src/App.css
+touch frontend/src/App.tsx
+touch frontend/src/index.css
+touch frontend/src/main.tsx
+touch frontend/src/vite-env.d.ts
+
+# Frontend asset
+touch frontend/src/assets/react.svg
+
+# ---------------------------
+# Root level
+# ---------------------------
+touch docker-compose.yml
+touch README.md
+```
 
 ---
 
-## 🔧 Step 1: Backend (FastAPI)
+### Backend (FastAPI)
 
-### `backend/app.py`
+`backend/app.py`
 
-```python
+```py
 import os
 import numpy as np
 from fastapi import FastAPI, Query
@@ -104,9 +177,9 @@ def hybrid_search(query: str = Query(...)):
             } for doc in top_docs
         ]
     }
-````
+```
 
-### `backend/embed_utils.py`
+`backend/embed_utils.py`
 
 ```python
 from sentence_transformers import SentenceTransformer
@@ -116,7 +189,7 @@ def embed_text(text: str):
     return model.encode(text).tolist()
 ```
 
-### `backend/utils/llm_utils.py`
+`backend/utils/llm_utils.py`
 
 ```python
 import os
@@ -141,10 +214,50 @@ Answer:"""
     )
     return response.json().get("response", "").strip()
 ```
+`backend/scripts/load_squad_data.py`
+```py
+import json
+from pymongo import MongoClient
+from sentence_transformers import SentenceTransformer
 
-### `backend/requirements.txt`
+client = MongoClient("mongodb+srv://mernuser:mernpass@cluster0.dhlaypm.mongodb.net/")
+db = client["qa_hybrid"]
+collection = db["documents"]
+model = SentenceTransformer("all-MiniLM-L6-v2")
 
+with open("scripts/dev-v2.0.json", "r") as f:
+    squad_data = json.load(f)
+
+docs_to_insert = []
+for article in squad_data["data"]:
+    for paragraph in article["paragraphs"]:
+        context = paragraph["context"]
+        for qa in paragraph["qas"]:
+            if qa["is_impossible"]:
+                continue
+            question = qa["question"]
+            answer = qa["answers"][0]["text"]
+            embedding = model.encode(question).tolist()
+
+            docs_to_insert.append({
+                "question": question,
+                "answer": answer,
+                "context": context,
+                "embedding": embedding,
+                "source": "squad"
+            })
+
+if docs_to_insert:
+    collection.insert_many(docs_to_insert)
+    print(f"✅ Inserted {len(docs_to_insert)} documents")
 ```
+`dev-v2.0.json`
+```json
+{"version": "v2.0", "data": [{"title": "Normans", "paragraphs": [{"qas": [{"question": "In what country is Normandy located?", "id": "56ddde6b9a695914005b9628", "answers": [{"text": "France", "answer_start": 159}, {"text": "France", "answer_start": 159}, {"text": "France", "answer_start": 159}, {"text": "France", "answer_start": 159}], "is_impossible": false}, {"question": "When were the Normans in Normandy?", "id": "56ddde6b9a695914005b9629", "answers": [{"text": "10th and 11th centuries", "answer_start": 94}, {"text": "in the 10th and 11th centuries", "answer_start": 87},
+```
+`backend/requirements.txt`
+
+```bash
 fastapi
 uvicorn
 pymongo
@@ -154,7 +267,7 @@ python-dotenv
 requests
 ```
 
-### `backend/Dockerfile`
+`backend/Dockerfile`
 
 ```Dockerfile
 FROM python:3.12-slim
@@ -166,13 +279,13 @@ CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
 
 ---
 
-## 🧪 Step 2: Load SQuAD Data
+### Load SQuAD Data
 
 Place `dev-v2.0.json` in `scripts/`, then run:
 
-### `scripts/load_squad.py`
+`scripts/load_squad.py`
 
-```python
+```py
 import json
 from pymongo import MongoClient
 from sentence_transformers import SentenceTransformer
@@ -205,7 +318,7 @@ col.insert_many(docs)
 print(f"✅ Inserted {len(docs)} docs")
 ```
 
-Run it:
+`Run it:`
 
 ```bash
 docker-compose run backend python scripts/load_squad.py
@@ -213,9 +326,9 @@ docker-compose run backend python scripts/load_squad.py
 
 ---
 
-## 🌐 Step 3: Frontend (React + Vite)
+### 🌐 Frontend (React + Vite)
 
-### `frontend/src/App.jsx`
+`frontend/src/App.tsx`
 
 ```jsx
 import { useState } from 'react'
@@ -257,7 +370,7 @@ function App() {
 export default App
 ```
 
-### `frontend/src/main.jsx`
+`frontend/src/main.tsx`
 
 ```jsx
 import React from 'react'
@@ -271,8 +384,113 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   </React.StrictMode>
 )
 ```
+`frontend/src/App.css`
+```css
+.app {
+  font-family: Arial, sans-serif;
+  padding: 2rem;
+  max-width: 600px;
+  margin: auto;
+}
 
-### `frontend/index.html`
+input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 1rem;
+}
+
+.results .card {
+  background-color: #f8f8f8;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-top: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+```
+`frontend/src/index.css`
+```css
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+```
+
+`vite-env.d.ts`
+```ts
+/// <reference types="vite/client" />
+```
+
+`frontend/index.html`
 
 ```html
 <!DOCTYPE html>
@@ -284,8 +502,128 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   </body>
 </html>
 ```
+`frontend/vite.config.ts`
+```ts
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react-swc'
 
-### `frontend/package.json`
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react()],
+})
+```
+
+`frontend/tsconfig.json`
+```json
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
+}
+```
+`frontend/tsconfig.app.json`
+```json
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true
+  },
+  "include": ["src"]
+}
+```
+
+`frontend/tsconfig.node.json`
+```json
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true
+  },
+  "include": ["vite.config.ts"]
+}
+```
+`frontend/eslint.config.js`
+```js
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import tseslint from 'typescript-eslint'
+import { globalIgnores } from 'eslint/config'
+
+export default tseslint.config([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      js.configs.recommended,
+      tseslint.configs.recommended,
+      reactHooks.configs['recommended-latest'],
+      reactRefresh.configs.vite,
+    ],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+    },
+  },
+])
+```
+`nginx.conf`
+
+```bash
+server {
+  listen 80;
+  server_name localhost;
+
+  root /usr/share/nginx/html;
+  index index.html;
+
+  location / {
+    try_files $uri /index.html;
+  }
+}
+```
+`frontend/package.json`
 
 ```json
 {
@@ -305,10 +643,20 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   }
 }
 ```
+`qa-hybrid-search/vite.dev.config.ts`
+```ts
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react-swc'
 
-### `frontend/Dockerfile`
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react()],
+})
+```
 
-```Dockerfile
+`frontend/Dockerfile`
+
+```dockerfile
 FROM node:20-alpine
 WORKDIR /app
 COPY . .
@@ -319,17 +667,15 @@ CMD ["serve", "-s", "dist"]
 
 ---
 
-## 🐳 Step 4: Docker Compose
+`qa-hybrid-search/.env`
 
-### `.env`
-
-```env
+```bash
 MONGODB_URL=mongodb://mongodb:27017
 OLLAMA_BASE_URL=http://ollama:11434
 OLLAMA_MODEL=llama3
 ```
 
-### `docker-compose.yml`
+`docker-compose.yml`
 
 ```yaml
 version: "3.9"
@@ -377,17 +723,14 @@ volumes:
 
 ---
 
-
-### `🚀 Run and Test`
-
-### 1. Start services
+`🚀 Run and Test`
 
 ```bash
 docker compose up --build
 ````
 ---
 
-### 2. Pull and run LLaMA3
+### Pull and run LLaMA3
 
 In a **second terminal**, run the following command to load the model:
 
@@ -417,21 +760,15 @@ docker exec -it qa-hybrid-search-ollama-1 ollama run llama3
 ` query :`
 
 ```text
-What is the role of customs union?
+In what country is Normandy located?"
 ```
 
 They get a generated answer and matching context from the vector database:
 
-```json
-{
-  "generated_answer": "A customs union eliminates tariffs and trade barriers...",
-  "results": [
-    {
-      "question": "What helps the process of free movement of goods?",
-      "answer": "a customs union, and the principle of non-discrimination",
-      "score": 0.93
-    }
-  ]
-}
+```js
+Q: In what country is Normandy located?
+A: France
+
+Score: 0.978
 ```
 ---

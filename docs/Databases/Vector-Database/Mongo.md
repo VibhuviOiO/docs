@@ -131,4 +131,10 @@ Expected output:
 
 
 ---
+Use case
 - [QA Hybrid Search App with MongoDB, FastAPI, Ollama & React](./Use-Case/Hybrid-Search.md)
+
+# References
+
+* [MongoDB Official Documentation](https://www.mongodb.com/docs/)  
+* [MongoDB Docker Hub](https://hub.docker.com/_/mongo)
