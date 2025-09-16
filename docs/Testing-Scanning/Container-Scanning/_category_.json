@@ -1,0 +1,8 @@
+{
+  "label": "Container Scanning",
+  "position": 4,
+  "link": {
+    "type": "generated-index",
+    "description": "Container and infrastructure security scanning tools for identifying vulnerabilities in Docker images and infrastructure as code."
+  }
+}

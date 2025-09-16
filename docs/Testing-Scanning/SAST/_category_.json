@@ -1,0 +1,8 @@
+{
+  "label": "SAST (Static Analysis)",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "Static Application Security Testing tools for analyzing source code to identify security vulnerabilities and code quality issues."
+  }
+}

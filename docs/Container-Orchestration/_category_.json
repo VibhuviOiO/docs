@@ -1,0 +1,8 @@
+{
+  "label": "Container-Orchestration",
+  "position": 8,
+  "link": {
+    "type": "generated-index",
+    "description": "Container orchestration tools including Helm and Nomad for managing containerized applications at scale."
+  }
+}
