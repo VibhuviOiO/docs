@@ -1,0 +1,8 @@
+{
+  "label": "Time-Series-Database",
+  "position": 5,
+  "link": {
+    "type": "generated-index",
+    "description": "Learn how to dockerize and run time-series databases including InfluxDB and TimescaleDB for metrics and monitoring data."
+  }
+}

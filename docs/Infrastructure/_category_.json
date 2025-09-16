@@ -1,0 +1,8 @@
+{
+  "label": "Infrastructure & Kubernetes",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "Learn how to set up and manage Kubernetes infrastructure including clusters, ingress controllers, certificate management, and container registries."
+  }
+}

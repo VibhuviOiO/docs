@@ -1,0 +1,8 @@
+{
+  "label": "CI/CD",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "Learn how to set up and configure CI/CD pipelines with popular tools like Jenkins, GitHub Actions, GitLab CI/CD, and ArgoCD for automated builds and deployments."
+  }
+}
