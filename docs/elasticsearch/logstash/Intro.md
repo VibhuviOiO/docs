@@ -14,9 +14,21 @@ keywords: [Logstash, Data Masking, PII, Encryption, Compliance, Secure ETL, Elas
 
 PII Masking Pipeline
     Remove or obfuscate personally identifiable info.
+    Use: GDPR, HIPAA
+    How:
+    ```bash
+        filter {
+            mutate {
+                gsub => ["message", "(?<=email=)[^\s&]+", "[REDACTED]"]
+            }
+        }
+    ```
+
 Field-Level Encryption Pipeline
     Encrypt sensitive fields before indexing.
-
+    Use: PCI-DSS, HIPAA
+    How: Custom Ruby or external plugin (e.g., logstash-filter-cipher)
+    
 Access Auditing Pipeline
     Track access to sensitive data (logs about the logs).
     Use: SOC 2, ISO 27001
@@ -27,7 +39,16 @@ Anonymization Pipeline
     Purpose: Replace values with non-identifiable pseudonyms.
     Use: R&D logs or GDPR pseudonymization
     How:
-    
+
+| Area                        | Tooling                         | Action                            |
+| --------------------------- | ------------------------------- | --------------------------------- |
+| 🔐 **Transport Security**   | Logstash output → Elasticsearch | Use HTTPS + certs                 |
+| 🔐 **Data at Rest**         | Elasticsearch                   | Enable disk encryption            |
+| 🔐 **Field-level Security** | Elasticsearch                   | Role-based field access           |
+| 🔐 **Audit Trail**          | Beats + Logstash                | Ship audit logs to separate store |
+| 🔐 **Anomaly Detection**    | ML or Watchers                  | Detect data exfil or PII leak     |
+| 🕵️ **Data Retention**      | ILM Policies                    | Auto-delete sensitive logs        |
+
 
 # 🫧 Elastic Stack Operations
 
