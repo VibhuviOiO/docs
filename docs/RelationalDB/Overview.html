@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en" dir="ltr" class="docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-Databases/Relational DB/overview" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.8.1">
+<title data-rh="true">Relational Database Overview | Infinite Operations</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://vibhuvioio.com/docs/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://vibhuvioio.com/docs/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://vibhuvioio.com/docs/docs/RelationalDB/Overview"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Relational Database Overview | Infinite Operations"><meta data-rh="true" name="description" content="Compare and choose the right relational database for your project. Learn about PostgreSQL, MySQL, SQL Server, MariaDB, SQLite, and ParadeDB."><meta data-rh="true" property="og:description" content="Compare and choose the right relational database for your project. Learn about PostgreSQL, MySQL, SQL Server, MariaDB, SQLite, and ParadeDB."><meta data-rh="true" name="keywords" content="relational database comparison,database selection guide,PostgreSQL vs MySQL,SQL Server vs PostgreSQL,database architecture,RDBMS comparison,database features,database performance,database scalability"><link data-rh="true" rel="icon" href="https://jinnabalu.com/assets/img/icons/favicon-194x194.png"><link data-rh="true" rel="canonical" href="https://vibhuvioio.com/docs/docs/RelationalDB/Overview"><link data-rh="true" rel="alternate" href="https://vibhuvioio.com/docs/docs/RelationalDB/Overview" hreflang="en"><link data-rh="true" rel="alternate" href="https://vibhuvioio.com/docs/docs/RelationalDB/Overview" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Databases","item":"https://vibhuvioio.com/docs/docs/category/databases"},{"@type":"ListItem","position":2,"name":"Relational-Database","item":"https://vibhuvioio.com/docs/docs/category/relational-database"},{"@type":"ListItem","position":3,"name":"Relational Database Overview","item":"https://vibhuvioio.com/docs/docs/RelationalDB/Overview"}]}</script><link rel="alternate" type="application/rss+xml" href="/docs/blog/rss.xml" title="Infinite Operations RSS Feed">
+<link rel="alternate" type="application/atom+xml" href="/docs/blog/atom.xml" title="Infinite Operations Atom Feed"><link rel="stylesheet" href="/docs/assets/css/styles.41acb0d9.css">
+<script src="/docs/assets/js/runtime~main.5dc9e6f4.js" defer="defer"></script>
+<script src="/docs/assets/js/main.69995eab.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><defs>
+<symbol id="theme-svg-external-link" viewBox="0 0 24 24"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"/></symbol>
+</defs></svg>
+<script>!function(){var t="light";var e=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return window.localStorage.getItem("theme")}catch(t){}}();document.documentElement.setAttribute("data-theme",e||t),document.documentElement.setAttribute("data-theme-choice",e||t)}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><link rel="preload" as="image" href="https://jinnabalu.com/assets/img/logo.png"><div role="region" aria-label="Skip to main content"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="theme-layout-navbar navbar navbar--fixed-top"><div class="navbar__inner"><div class="theme-layout-navbar-left navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/docs/"><div class="navbar__logo"><img src="https://jinnabalu.com/assets/img/logo.png" alt="Ops" class="themedComponent_mlkZ themedComponent--light_NVdE"><img src="https://jinnabalu.com/assets/img/logo.png" alt="Ops" class="themedComponent_mlkZ themedComponent--dark_xIcU"></div><b class="navbar__title text--truncate">Ops</b></a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/docs/docs/category/infrastructure--kubernetes">Docs</a></div><div class="theme-layout-navbar-right navbar__items navbar__items--right"><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="system mode" aria-label="Switch between dark and light mode (currently system mode)"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_g3eP lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_g3eP darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_g3eP systemToggleIcon_QzmC"><path fill="currentColor" d="m12 21c4.971 0 9-4.029 9-9s-4.029-9-9-9-9 4.029-9 9 4.029 9 9 9zm4.95-13.95c1.313 1.313 2.05 3.093 2.05 4.95s-0.738 3.637-2.05 4.95c-1.313 1.313-3.093 2.05-4.95 2.05v-14c1.857 0 3.637 0.737 4.95 2.05z"></path></svg></button></div><div class="navbarSearchContainer_Bca1"></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="theme-layout-main main-wrapper mainWrapper_z2l0"><div class="docsWrapper_hBAB"><button aria-label="Scroll back to top" class="clean-btn theme-back-to-top-button backToTopButton_sjWU" type="button"></button><div class="docRoot_UBD9"><aside class="theme-doc-sidebar-container docSidebarContainer_YfHR"><div class="sidebarViewport_aRkj"><div class="sidebar_njMd"><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/docs/category/infrastructure--kubernetes">Infrastructure &amp; Kubernetes</a><button aria-label="Expand sidebar category &#x27;Infrastructure &amp; Kubernetes&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/docs/category/k8s-cluster">K8s Cluster</a><button aria-label="Expand sidebar category &#x27;K8s Cluster&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--active" href="/docs/docs/category/databases">Databases</a><button aria-label="Collapse sidebar category &#x27;Databases&#x27;" aria-expanded="true" type="button" class="clean-btn menu__caret"></button></div><ul class="menu__list"><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-2 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" tabindex="0" href="/docs/docs/category/vector-database">Vector-Database</a><button aria-label="Expand sidebar category &#x27;Vector-Database&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-2 menu__list-item"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--active" tabindex="0" href="/docs/docs/category/relational-database">Relational-Database</a><button aria-label="Collapse sidebar category &#x27;Relational-Database&#x27;" aria-expanded="true" type="button" class="clean-btn menu__caret"></button></div><ul class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-3 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" tabindex="0" href="/docs/docs/RelationalDB/Overview">Relational Database Overview</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-3 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/docs/RelationalDB/PostgreSQL">PostgreSQL</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-3 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/docs/RelationalDB/MySQL">MySQL</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-3 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/docs/RelationalDB/SQLServer">SQL Server</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-3 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/docs/RelationalDB/ParadeDB">ParadeDB</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-3 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/docs/RelationalDB/MariaDB">MariaDB</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-3 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/docs/RelationalDB/SQLite">SQLite</a></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-2 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" tabindex="0" href="/docs/docs/category/nosql-database">NoSQL-Database</a><button aria-label="Expand sidebar category &#x27;NoSQL-Database&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-2 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" tabindex="0" href="/docs/docs/category/search-analytics">Search-Analytics</a><button aria-label="Expand sidebar category &#x27;Search-Analytics&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-2 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" tabindex="0" href="/docs/docs/category/time-series-database">Time-Series-Database</a><button aria-label="Expand sidebar category &#x27;Time-Series-Database&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-2 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" tabindex="0" href="/docs/docs/category/object-store">Object-Store</a><button aria-label="Expand sidebar category &#x27;Object-Store&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/docs/category/cicd">CI/CD</a><button aria-label="Expand sidebar category &#x27;CI/CD&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/docs/category/testing--scanning">Testing &amp; Scanning</a><button aria-label="Expand sidebar category &#x27;Testing &amp; Scanning&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/docs/category/build--ml-tools">Build &amp; ML Tools</a><button aria-label="Expand sidebar category &#x27;Build &amp; ML Tools&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/docs/category/observability--monitoring">Observability &amp; Monitoring</a><button aria-label="Expand sidebar category &#x27;Observability &amp; Monitoring&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/docs/category/data-processing">Data-Processing</a><button aria-label="Expand sidebar category &#x27;Data-Processing&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/docs/category/security">Security</a><button aria-label="Expand sidebar category &#x27;Security&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/docs/category/elasticsearch-operation">Elasticsearch Operation</a><button aria-label="Expand sidebar category &#x27;Elasticsearch Operation&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/docs/category/minio">Minio</a><button aria-label="Expand sidebar category &#x27;Minio&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/docs/category/vector-databases">Vector Databases</a><button aria-label="Expand sidebar category &#x27;Vector Databases&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/docs/category/container-orchestration">Container-Orchestration</a><button aria-label="Expand sidebar category &#x27;Container-Orchestration&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/docs/category/cert-manager">Cert Manager</a><button aria-label="Expand sidebar category &#x27;Cert Manager&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/docs/category/ingress-nginx">Ingress Nginx</a><button aria-label="Expand sidebar category &#x27;Ingress Nginx&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/docs/docs/intro">Infra Intro</a></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--sublist-caret" role="button" aria-expanded="false" href="/docs/docs/CreateMongoSecurityKey">mongo</a></div></li></ul></nav></div></div></aside><main class="docMainContainer_TBSr"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_VOVn"><div class="docItemContainer_Djhp"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_Z_bl" aria-label="Breadcrumbs"><ul class="breadcrumbs"><li class="breadcrumbs__item"><a aria-label="Home page" class="breadcrumbs__link" href="/docs/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_YNFT"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li class="breadcrumbs__item"><a class="breadcrumbs__link" href="/docs/docs/category/databases"><span>Databases</span></a></li><li class="breadcrumbs__item"><a class="breadcrumbs__link" href="/docs/docs/category/relational-database"><span>Relational-Database</span></a></li><li class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link">Relational Database Overview</span></li></ul></nav><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_ITEo"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">On this page</button></div><div class="theme-doc-markdown markdown"><header><h1>🗄️ Relational Database Overview &amp; Comparison Guide</h1></header>
+<p>Choosing the right relational database is crucial for your application&#x27;s success. This guide compares the major relational databases available in our documentation to help you make an informed decision.</p>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-quick-comparison-table">📊 Quick Comparison Table<a href="#-quick-comparison-table" class="hash-link" aria-label="Direct link to 📊 Quick Comparison Table" title="Direct link to 📊 Quick Comparison Table">​</a></h2>
+<table><thead><tr><th>Database</th><th>Type</th><th>License</th><th>Best For</th><th>Complexity</th><th>Performance</th><th>Scalability</th></tr></thead><tbody><tr><td><strong>SQLite</strong></td><td>Embedded</td><td>Public Domain</td><td>Development, Mobile, IoT</td><td>⭐</td><td>⭐⭐⭐</td><td>⭐</td></tr><tr><td><strong>MySQL</strong></td><td>Server</td><td>GPL/Commercial</td><td>Web Apps, E-commerce</td><td>⭐⭐</td><td>⭐⭐⭐⭐</td><td>⭐⭐⭐</td></tr><tr><td><strong>MariaDB</strong></td><td>Server</td><td>GPL</td><td>MySQL Alternative</td><td>⭐⭐</td><td>⭐⭐⭐⭐</td><td>⭐⭐⭐⭐</td></tr><tr><td><strong>PostgreSQL</strong></td><td>Server</td><td>PostgreSQL License</td><td>Complex Apps, Analytics</td><td>⭐⭐⭐</td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐⭐</td></tr><tr><td><strong>SQL Server</strong></td><td>Server</td><td>Commercial</td><td>Enterprise, .NET Apps</td><td>⭐⭐⭐⭐</td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐⭐⭐</td></tr><tr><td><strong>ParadeDB</strong></td><td>Server</td><td>AGPL</td><td>Analytics, OLAP</td><td>⭐⭐⭐</td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐⭐</td></tr></tbody></table>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-database-selection-guide">🎯 Database Selection Guide<a href="#-database-selection-guide" class="hash-link" aria-label="Direct link to 🎯 Database Selection Guide" title="Direct link to 🎯 Database Selection Guide">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="choose-sqlite-when">Choose <strong>SQLite</strong> when:<a href="#choose-sqlite-when" class="hash-link" aria-label="Direct link to choose-sqlite-when" title="Direct link to choose-sqlite-when">​</a></h3>
+<ul>
+<li>Building mobile applications or desktop software</li>
+<li>Developing prototypes or small applications</li>
+<li>Need embedded database with zero configuration</li>
+<li>Working with IoT or edge devices</li>
+<li>Creating local caching solutions</li>
+<li>Building single-user applications</li>
+</ul>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Zero configuration and maintenance</li>
+<li>Extremely lightweight and fast for small datasets</li>
+<li>ACID compliant</li>
+<li>Cross-platform compatibility</li>
+<li>No server required</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Limited concurrent write access</li>
+<li>No user management or network access</li>
+<li>Not suitable for high-traffic applications</li>
+<li>Limited scalability</li>
+</ul>
+<hr>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="choose-mysql-when">Choose <strong>MySQL</strong> when:<a href="#choose-mysql-when" class="hash-link" aria-label="Direct link to choose-mysql-when" title="Direct link to choose-mysql-when">​</a></h3>
+<ul>
+<li>Building web applications or e-commerce platforms</li>
+<li>Need proven reliability and wide community support</li>
+<li>Working with content management systems</li>
+<li>Require good performance with moderate complexity</li>
+<li>Budget constraints (open source)</li>
+<li>Need extensive third-party tool support</li>
+</ul>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Excellent performance for read-heavy workloads</li>
+<li>Mature ecosystem and wide adoption</li>
+<li>Easy to learn and use</li>
+<li>Great replication features</li>
+<li>Strong community support</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Limited advanced features compared to PostgreSQL</li>
+<li>Some features require commercial license</li>
+<li>Less suitable for complex analytical queries</li>
+<li>Storage engine complexity</li>
+</ul>
+<hr>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="choose-mariadb-when">Choose <strong>MariaDB</strong> when:<a href="#choose-mariadb-when" class="hash-link" aria-label="Direct link to choose-mariadb-when" title="Direct link to choose-mariadb-when">​</a></h3>
+<ul>
+<li>Want MySQL compatibility with enhanced features</li>
+<li>Need better performance than MySQL</li>
+<li>Require advanced features like JSON support</li>
+<li>Want guaranteed open-source licensing</li>
+<li>Need Galera cluster for high availability</li>
+<li>Looking for active development and innovation</li>
+</ul>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Drop-in MySQL replacement</li>
+<li>Enhanced performance and features</li>
+<li>Strong commitment to open source</li>
+<li>Advanced replication options</li>
+<li>Better optimizer than MySQL</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Smaller ecosystem than MySQL</li>
+<li>Some compatibility issues with newer MySQL versions</li>
+<li>Less enterprise support options</li>
+<li>Newer features may have stability concerns</li>
+</ul>
+<hr>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="choose-postgresql-when">Choose <strong>PostgreSQL</strong> when:<a href="#choose-postgresql-when" class="hash-link" aria-label="Direct link to choose-postgresql-when" title="Direct link to choose-postgresql-when">​</a></h3>
+<ul>
+<li>Building complex applications with advanced data types</li>
+<li>Need strong ACID compliance and data integrity</li>
+<li>Require advanced features (JSON, arrays, custom types)</li>
+<li>Working with geospatial data (PostGIS)</li>
+<li>Need powerful query optimization</li>
+<li>Building analytical or reporting applications</li>
+</ul>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Most advanced open-source RDBMS</li>
+<li>Excellent standards compliance</li>
+<li>Powerful query optimizer</li>
+<li>Rich data types and extensions</li>
+<li>Strong consistency and reliability</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Steeper learning curve</li>
+<li>More resource intensive than MySQL</li>
+<li>Slower for simple read operations</li>
+<li>More complex configuration</li>
+</ul>
+<hr>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="choose-sql-server-when">Choose <strong>SQL Server</strong> when:<a href="#choose-sql-server-when" class="hash-link" aria-label="Direct link to choose-sql-server-when" title="Direct link to choose-sql-server-when">​</a></h3>
+<ul>
+<li>Building enterprise applications</li>
+<li>Working in Microsoft ecosystem (.NET, Azure)</li>
+<li>Need advanced business intelligence features</li>
+<li>Require enterprise-grade security and compliance</li>
+<li>Need comprehensive management tools</li>
+<li>Working with large-scale data warehousing</li>
+</ul>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Excellent enterprise features</li>
+<li>Advanced security and compliance tools</li>
+<li>Comprehensive management suite</li>
+<li>Strong integration with Microsoft stack</li>
+<li>Excellent performance and scalability</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Expensive licensing costs</li>
+<li>Windows-centric (though Linux support exists)</li>
+<li>Vendor lock-in concerns</li>
+<li>Complex licensing model</li>
+</ul>
+<hr>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="choose-paradedb-when">Choose <strong>ParadeDB</strong> when:<a href="#choose-paradedb-when" class="hash-link" aria-label="Direct link to choose-paradedb-when" title="Direct link to choose-paradedb-when">​</a></h3>
+<ul>
+<li>Need both OLTP and OLAP in one database</li>
+<li>Building analytical applications on PostgreSQL</li>
+<li>Require columnar storage for analytics</li>
+<li>Want PostgreSQL compatibility with analytical performance</li>
+<li>Working with time-series or analytical data</li>
+<li>Need faster analytical queries than standard PostgreSQL</li>
+</ul>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Combines OLTP and OLAP capabilities</li>
+<li>Built on PostgreSQL foundation</li>
+<li>Columnar storage for analytics</li>
+<li>Familiar PostgreSQL interface</li>
+<li>Good for hybrid workloads</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Newer project with smaller community</li>
+<li>Limited production track record</li>
+<li>May have compatibility limitations</li>
+<li>Specialized use case</li>
+</ul>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="️-architecture-patterns">🏗️ Architecture Patterns<a href="#️-architecture-patterns" class="hash-link" aria-label="Direct link to 🏗️ Architecture Patterns" title="Direct link to 🏗️ Architecture Patterns">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="single-database-architecture">Single Database Architecture<a href="#single-database-architecture" class="hash-link" aria-label="Direct link to Single Database Architecture" title="Direct link to Single Database Architecture">​</a></h3>
+<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">Application → Database</span><br></span></code></pre></div></div>
+<p><strong>Best for:</strong> Small to medium applications, development, prototyping
+<strong>Databases:</strong> SQLite, MySQL, PostgreSQL, MariaDB</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="master-slave-replication">Master-Slave Replication<a href="#master-slave-replication" class="hash-link" aria-label="Direct link to Master-Slave Replication" title="Direct link to Master-Slave Replication">​</a></h3>
+<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">Application → Master DB → Slave DB(s)</span><br></span></code></pre></div></div>
+<p><strong>Best for:</strong> Read-heavy applications, backup, reporting
+<strong>Databases:</strong> MySQL, MariaDB, PostgreSQL, SQL Server</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="master-master-replication">Master-Master Replication<a href="#master-master-replication" class="hash-link" aria-label="Direct link to Master-Master Replication" title="Direct link to Master-Master Replication">​</a></h3>
+<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">Application ↔ Master DB ↔ Master DB</span><br></span></code></pre></div></div>
+<p><strong>Best for:</strong> High availability, distributed applications
+<strong>Databases:</strong> MariaDB (Galera), MySQL, SQL Server</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="shardingpartitioning">Sharding/Partitioning<a href="#shardingpartitioning" class="hash-link" aria-label="Direct link to Sharding/Partitioning" title="Direct link to Sharding/Partitioning">​</a></h3>
+<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">Application → Load Balancer → DB Shard 1, 2, 3...</span><br></span></code></pre></div></div>
+<p><strong>Best for:</strong> Very large datasets, high scalability
+<strong>Databases:</strong> PostgreSQL, MySQL, SQL Server</p>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-performance-characteristics">📈 Performance Characteristics<a href="#-performance-characteristics" class="hash-link" aria-label="Direct link to 📈 Performance Characteristics" title="Direct link to 📈 Performance Characteristics">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="read-performance-ranking">Read Performance Ranking<a href="#read-performance-ranking" class="hash-link" aria-label="Direct link to Read Performance Ranking" title="Direct link to Read Performance Ranking">​</a></h3>
+<ol>
+<li><strong>SQLite</strong> (for small datasets)</li>
+<li><strong>MySQL/MariaDB</strong> (optimized for reads)</li>
+<li><strong>PostgreSQL</strong> (good with proper tuning)</li>
+<li><strong>SQL Server</strong> (excellent with proper hardware)</li>
+<li><strong>ParadeDB</strong> (depends on workload type)</li>
+</ol>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="write-performance-ranking">Write Performance Ranking<a href="#write-performance-ranking" class="hash-link" aria-label="Direct link to Write Performance Ranking" title="Direct link to Write Performance Ranking">​</a></h3>
+<ol>
+<li><strong>MySQL/MariaDB</strong> (simple writes)</li>
+<li><strong>PostgreSQL</strong> (complex writes)</li>
+<li><strong>SQL Server</strong> (enterprise workloads)</li>
+<li><strong>ParadeDB</strong> (analytical writes)</li>
+<li><strong>SQLite</strong> (single user only)</li>
+</ol>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="analytical-performance-ranking">Analytical Performance Ranking<a href="#analytical-performance-ranking" class="hash-link" aria-label="Direct link to Analytical Performance Ranking" title="Direct link to Analytical Performance Ranking">​</a></h3>
+<ol>
+<li><strong>ParadeDB</strong> (designed for analytics)</li>
+<li><strong>SQL Server</strong> (with columnstore)</li>
+<li><strong>PostgreSQL</strong> (with extensions)</li>
+<li><strong>MariaDB</strong> (with ColumnStore)</li>
+<li><strong>MySQL</strong> (limited analytical features)</li>
+</ol>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-feature-comparison">🔧 Feature Comparison<a href="#-feature-comparison" class="hash-link" aria-label="Direct link to 🔧 Feature Comparison" title="Direct link to 🔧 Feature Comparison">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="data-types-support">Data Types Support<a href="#data-types-support" class="hash-link" aria-label="Direct link to Data Types Support" title="Direct link to Data Types Support">​</a></h3>
+<table><thead><tr><th>Feature</th><th>SQLite</th><th>MySQL</th><th>MariaDB</th><th>PostgreSQL</th><th>SQL Server</th><th>ParadeDB</th></tr></thead><tbody><tr><td>JSON</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>Arrays</td><td>❌</td><td>❌</td><td>❌</td><td>✅</td><td>❌</td><td>✅</td></tr><tr><td>XML</td><td>❌</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>Geospatial</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>Full-text Search</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr></tbody></table>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="advanced-features">Advanced Features<a href="#advanced-features" class="hash-link" aria-label="Direct link to Advanced Features" title="Direct link to Advanced Features">​</a></h3>
+<table><thead><tr><th>Feature</th><th>SQLite</th><th>MySQL</th><th>MariaDB</th><th>PostgreSQL</th><th>SQL Server</th><th>ParadeDB</th></tr></thead><tbody><tr><td>Window Functions</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>CTEs</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>Stored Procedures</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>Triggers</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>Custom Functions</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>Partitioning</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr></tbody></table>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-getting-started-recommendations">🚀 Getting Started Recommendations<a href="#-getting-started-recommendations" class="hash-link" aria-label="Direct link to 🚀 Getting Started Recommendations" title="Direct link to 🚀 Getting Started Recommendations">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="for-beginners">For Beginners<a href="#for-beginners" class="hash-link" aria-label="Direct link to For Beginners" title="Direct link to For Beginners">​</a></h3>
+<ol>
+<li><strong>Start with SQLite</strong> for learning SQL basics</li>
+<li><strong>Move to MySQL</strong> for first web applications</li>
+<li><strong>Explore PostgreSQL</strong> for advanced features</li>
+</ol>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="for-web-development">For Web Development<a href="#for-web-development" class="hash-link" aria-label="Direct link to For Web Development" title="Direct link to For Web Development">​</a></h3>
+<ol>
+<li><strong>MySQL/MariaDB</strong> for content-heavy sites</li>
+<li><strong>PostgreSQL</strong> for complex applications</li>
+<li><strong>SQLite</strong> for development and testing</li>
+</ol>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="for-enterprise">For Enterprise<a href="#for-enterprise" class="hash-link" aria-label="Direct link to For Enterprise" title="Direct link to For Enterprise">​</a></h3>
+<ol>
+<li><strong>SQL Server</strong> for Microsoft environments</li>
+<li><strong>PostgreSQL</strong> for open-source enterprise</li>
+<li><strong>ParadeDB</strong> for analytical workloads</li>
+</ol>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="for-analytics">For Analytics<a href="#for-analytics" class="hash-link" aria-label="Direct link to For Analytics" title="Direct link to For Analytics">​</a></h3>
+<ol>
+<li><strong>ParadeDB</strong> for PostgreSQL-based analytics</li>
+<li><strong>SQL Server</strong> with columnstore indexes</li>
+<li><strong>PostgreSQL</strong> with analytical extensions</li>
+</ol>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-next-steps">📚 Next Steps<a href="#-next-steps" class="hash-link" aria-label="Direct link to 📚 Next Steps" title="Direct link to 📚 Next Steps">​</a></h2>
+<p>Choose your database and follow the detailed guides:</p>
+<ul>
+<li><a href="/docs/docs/RelationalDB/SQLite">SQLite Guide</a> - Lightweight embedded database</li>
+<li><a href="/docs/docs/RelationalDB/MySQL">MySQL Guide</a> - Popular web database</li>
+<li><a href="/docs/docs/RelationalDB/MariaDB">MariaDB Guide</a> - Enhanced MySQL alternative</li>
+<li><a href="/docs/docs/RelationalDB/PostgreSQL">PostgreSQL Guide</a> - Advanced open-source database</li>
+<li><a href="/docs/docs/RelationalDB/SQLServer">SQL Server Guide</a> - Enterprise Microsoft database</li>
+<li><a href="/docs/docs/RelationalDB/ParadeDB">ParadeDB Guide</a> - PostgreSQL-based analytics</li>
+</ul>
+<p>Each guide includes:</p>
+<ul>
+<li>Docker Compose setup</li>
+<li>Basic operations and examples</li>
+<li>Python integration</li>
+<li>Performance tuning</li>
+<li>Backup and restore procedures</li>
+<li>Production considerations</li>
+</ul>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-migration-paths">🤝 Migration Paths<a href="#-migration-paths" class="hash-link" aria-label="Direct link to 🤝 Migration Paths" title="Direct link to 🤝 Migration Paths">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="common-migration-scenarios">Common Migration Scenarios<a href="#common-migration-scenarios" class="hash-link" aria-label="Direct link to Common Migration Scenarios" title="Direct link to Common Migration Scenarios">​</a></h3>
+<p><strong>MySQL → MariaDB</strong></p>
+<ul>
+<li>Drop-in replacement in most cases</li>
+<li>Test thoroughly with your specific workload</li>
+<li>Update connection strings if needed</li>
+</ul>
+<p><strong>MySQL → PostgreSQL</strong></p>
+<ul>
+<li>Schema conversion required</li>
+<li>Different SQL syntax for some operations</li>
+<li>More complex but gains advanced features</li>
+</ul>
+<p><strong>SQLite → PostgreSQL/MySQL</strong></p>
+<ul>
+<li>Add user management and networking</li>
+<li>Modify connection handling in application</li>
+<li>Consider data migration tools</li>
+</ul>
+<p><strong>On-Premises → Cloud</strong></p>
+<ul>
+<li>Consider managed database services</li>
+<li>Plan for network latency changes</li>
+<li>Review security and compliance requirements</li>
+</ul>
+<p>Choose the database that best fits your current needs and growth plans. Remember, you can always migrate later as your requirements evolve!#</p>
+<h1>References</h1>
+<ul>
+<li><a href="https://docs.trychroma.com" target="_blank" rel="noopener noreferrer">ChromaDB</a></li>
+<li><a href="https://www.sbert.net/" target="_blank" rel="noopener noreferrer">SentenceTransformers</a></li>
+</ul></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="row margin-top--sm theme-doc-footer-edit-meta-row"><div class="col"><a href="https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/Databases/Relational DB/overview.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>Edit this page</a></div><div class="col lastUpdated_JAkA"></div></div></footer></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/docs/docs/category/relational-database"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">Relational-Database</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/docs/docs/RelationalDB/PostgreSQL"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">PostgreSQL</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#-quick-comparison-table" class="table-of-contents__link toc-highlight">📊 Quick Comparison Table</a></li><li><a href="#-database-selection-guide" class="table-of-contents__link toc-highlight">🎯 Database Selection Guide</a><ul><li><a href="#choose-sqlite-when" class="table-of-contents__link toc-highlight">Choose <strong>SQLite</strong> when:</a></li><li><a href="#choose-mysql-when" class="table-of-contents__link toc-highlight">Choose <strong>MySQL</strong> when:</a></li><li><a href="#choose-mariadb-when" class="table-of-contents__link toc-highlight">Choose <strong>MariaDB</strong> when:</a></li><li><a href="#choose-postgresql-when" class="table-of-contents__link toc-highlight">Choose <strong>PostgreSQL</strong> when:</a></li><li><a href="#choose-sql-server-when" class="table-of-contents__link toc-highlight">Choose <strong>SQL Server</strong> when:</a></li><li><a href="#choose-paradedb-when" class="table-of-contents__link toc-highlight">Choose <strong>ParadeDB</strong> when:</a></li></ul></li><li><a href="#️-architecture-patterns" class="table-of-contents__link toc-highlight">🏗️ Architecture Patterns</a><ul><li><a href="#single-database-architecture" class="table-of-contents__link toc-highlight">Single Database Architecture</a></li><li><a href="#master-slave-replication" class="table-of-contents__link toc-highlight">Master-Slave Replication</a></li><li><a href="#master-master-replication" class="table-of-contents__link toc-highlight">Master-Master Replication</a></li><li><a href="#shardingpartitioning" class="table-of-contents__link toc-highlight">Sharding/Partitioning</a></li></ul></li><li><a href="#-performance-characteristics" class="table-of-contents__link toc-highlight">📈 Performance Characteristics</a><ul><li><a href="#read-performance-ranking" class="table-of-contents__link toc-highlight">Read Performance Ranking</a></li><li><a href="#write-performance-ranking" class="table-of-contents__link toc-highlight">Write Performance Ranking</a></li><li><a href="#analytical-performance-ranking" class="table-of-contents__link toc-highlight">Analytical Performance Ranking</a></li></ul></li><li><a href="#-feature-comparison" class="table-of-contents__link toc-highlight">🔧 Feature Comparison</a><ul><li><a href="#data-types-support" class="table-of-contents__link toc-highlight">Data Types Support</a></li><li><a href="#advanced-features" class="table-of-contents__link toc-highlight">Advanced Features</a></li></ul></li><li><a href="#-getting-started-recommendations" class="table-of-contents__link toc-highlight">🚀 Getting Started Recommendations</a><ul><li><a href="#for-beginners" class="table-of-contents__link toc-highlight">For Beginners</a></li><li><a href="#for-web-development" class="table-of-contents__link toc-highlight">For Web Development</a></li><li><a href="#for-enterprise" class="table-of-contents__link toc-highlight">For Enterprise</a></li><li><a href="#for-analytics" class="table-of-contents__link toc-highlight">For Analytics</a></li></ul></li><li><a href="#-next-steps" class="table-of-contents__link toc-highlight">📚 Next Steps</a></li><li><a href="#-migration-paths" class="table-of-contents__link toc-highlight">🤝 Migration Paths</a><ul><li><a href="#common-migration-scenarios" class="table-of-contents__link toc-highlight">Common Migration Scenarios</a></li></ul></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 </div></div></div></footer></div>
+</body>
+</html>
