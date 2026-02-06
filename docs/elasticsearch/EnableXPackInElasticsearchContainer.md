@@ -17,7 +17,7 @@ Let's enable **X-Pack** and set up **SSL** on a containerized Elasticsearch node
 You’ve got 3 easy ways to generate SSL certs. All require **Docker** to be running:
 
 - **Bash Script**:  
-  👉 [Generate certs with Bash (interactive prompts)](http://jinnabalu.com/oio/docs/ElasticStack/EnableXPackSecurityCertsGenerator)
+  👉 [Generate certs with Bash (interactive prompts)](https://vibhuvioio.com/docs/docs/ElasticStack/EnableXPackSecurityCertsGenerator)
 
 - **Docker Run**:  
   👉 [Generate certs using `docker run`](./miscellaneous/CertsWithDockerRun.md)

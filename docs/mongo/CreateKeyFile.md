@@ -3,7 +3,7 @@ sidebar_position: 1
 title: "🔐 Security Create Keyfile for MongoDB Security"
 description: "Quick and clear guide to generate a secure MongoDB keyfile for containerized environments on Mac and Linux. Lock it down right."
 slug: /CreateMongoSecurityKey
-image: https://jinnabalu.com/oio/img/mongo/CreateKeyfileForMongoSecurity.png
+image: https://vibhuvioio.com/docs/img/mongo/CreateKeyfileForMongoSecurity.png
 keywords: [mongodb, security, keyfile, container, docker, linux, mac, mongo auth, mongo security, enable auth]
 ---
 

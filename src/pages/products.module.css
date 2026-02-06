@@ -1,0 +1,198 @@
+/* Products Page Styling */
+
+.header {
+  padding: 4rem 0 3rem;
+  text-align: center;
+  background: linear-gradient(135deg, #2f02c4 0%, #5020e8 100%);
+  color: white;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.subtitle {
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.products {
+  padding: 5rem 0;
+}
+
+.productCard {
+  margin-bottom: 2.5rem;
+}
+
+.card {
+  height: 100%;
+  border-radius: 16px;
+  padding: 0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--ifm-card-background-color);
+  border: 2px solid var(--ifm-color-emphasis-200);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+  border-color: var(--ifm-color-primary);
+}
+
+.cardHeader {
+  padding: 1.5rem 2rem 0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.status {
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.statusLive {
+  background: #10b981;
+  color: white;
+}
+
+.statusComingSoon {
+  background: #f59e0b;
+  color: white;
+}
+
+.cardBody {
+  padding: 1.5rem 2rem;
+  flex-grow: 1;
+}
+
+.cardTitle {
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+  color: var(--ifm-heading-color);
+  font-weight: 700;
+}
+
+.cardDescription {
+  font-size: 1rem;
+  color: var(--ifm-color-emphasis-700);
+  margin-bottom: 1.5rem;
+  line-height: 1.7;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tag {
+  padding: 0.35rem 0.85rem;
+  background: var(--ifm-color-emphasis-200);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ifm-color-emphasis-800);
+}
+
+.cardFooter {
+  padding: 1.5rem 2rem;
+  border-top: 1px solid var(--ifm-color-emphasis-200);
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.cardLink {
+  color: var(--ifm-color-primary);
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  flex: 1;
+}
+
+.cardLink:hover {
+  color: var(--ifm-color-primary-dark);
+  text-decoration: none;
+}
+
+.githubLink {
+  padding: 0.5rem 1.25rem;
+  border: 2px solid var(--ifm-color-emphasis-300);
+  border-radius: 6px;
+  color: var(--ifm-color-emphasis-800);
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.githubLink:hover {
+  border-color: var(--ifm-color-primary);
+  color: var(--ifm-color-primary);
+  text-decoration: none;
+}
+
+.cta {
+  padding: 5rem 0;
+  background: var(--ifm-color-emphasis-100);
+}
+
+.ctaBox {
+  text-align: center;
+  padding: 3rem 2rem;
+  border-radius: 16px;
+  background: var(--ifm-card-background-color);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.ctaBox h2 {
+  margin-bottom: 1rem;
+  font-size: 2.25rem;
+  font-weight: 800;
+}
+
+.ctaBox p {
+  font-size: 1.15rem;
+  max-width: 650px;
+  margin: 0 auto 2rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+@media screen and (max-width: 996px) {
+  .title {
+    font-size: 2.25rem;
+  }
+  
+  .subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .header {
+    padding: 3rem 0 2rem;
+  }
+  
+  .products {
+    padding: 3rem 0;
+  }
+  
+  .productCard {
+    margin-bottom: 2rem;
+  }
+  
+  .cta {
+    padding: 3rem 0;
+  }
+}

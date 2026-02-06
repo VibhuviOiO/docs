@@ -5,10 +5,10 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
   title: 'Infinite Operations',
   tagline: 'Experience The Operations',
-  favicon: 'https://jinnabalu.com/assets/img/icons/favicon-194x194.png',
+  favicon: 'img/favicon.ico',
   url: 'https://vibhuvioio.com',
   baseUrl: '/docs/',
-  organizationName: 'jinnabaalu',
+  organizationName: 'VibhuviOiO',
   projectName: 'docs',
   trailingSlash: false,
   deploymentBranch: 'gh-pages',
@@ -24,6 +24,7 @@ const config: Config = {
       'classic',
       {
         docs: {
+          routeBasePath: '/',
           sidebarPath: './sidebars.ts',
           editUrl:
             'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
@@ -49,27 +50,98 @@ const config: Config = {
 
   themeConfig: {
     image: 'img/docusaurus-social-card.jpg',
+    colorMode: {
+      defaultMode: 'dark',
+      disableSwitch: false,
+      respectPrefersColorScheme: true,
+    },
     navbar: {
-      title: 'Ops',
+      title: 'VibhuviOiO',
+      hideOnScroll: true,
       logo: {
-        alt: 'Ops',
-        src: 'https://jinnabalu.com/assets/img/logo.png',
+        alt: 'VibhuviOiO Logo',
+        src: 'img/logo.svg',
       },
       items: [
         {
           type: 'docSidebar',
           sidebarId: 'tutorialSidebar',
           position: 'left',
-          label: 'Docs',
-        }
+          label: 'Documentation',
+        },
+        {
+          to: '/products',
+          label: 'Products',
+          position: 'left',
+        },
+        {
+          href: 'https://vibhuvioio.com',
+          label: 'Home',
+          position: 'right',
+        },
+        {
+          href: 'https://github.com/VibhuviOiO/docs',
+          label: 'GitHub',
+          position: 'right',
+        },
       ],
     },
     footer: {
       style: 'dark',
       links: [
-
+        {
+          title: 'Documentation',
+          items: [
+            {
+              label: 'Infrastructure',
+              to: '/Infrastructure/ansible',
+            },
+            {
+              label: 'Databases',
+              to: '/Databases/NoSQL/mongodb',
+            },
+            {
+              label: 'Elastic Stack',
+              to: '/ElasticStack',
+            },
+          ],
+        },
+        {
+          title: 'Products',
+          items: [
+            {
+              label: 'Docker Registry UI',
+              href: 'https://vibhuvioio.com/docker-registry-ui/',
+            },
+            {
+              label: 'LDAP Manager',
+              href: 'https://vibhuvioio.com/ldap-manager/',
+            },
+            {
+              label: 'Suchaka Status Page',
+              href: 'https://github.com/VibhuviOiO/suchaka',
+            },
+            {
+              label: 'All Products',
+              to: '/products',
+            },
+          ],
+        },
+        {
+          title: 'Community',
+          items: [
+            {
+              label: 'GitHub',
+              href: 'https://github.com/VibhuviOiO',
+            },
+            {
+              label: 'Main Website',
+              href: 'https://vibhuvioio.com',
+            },
+          ],
+        },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} `,
+      copyright: `Copyright © ${new Date().getFullYear()} VibhuviOiO. Open Source Infrastructure Tools.`,
     },
     prism: {
       theme: prismThemes.github,

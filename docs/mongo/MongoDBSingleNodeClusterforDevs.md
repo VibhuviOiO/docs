@@ -3,7 +3,7 @@ sidebar_position: 1
 title: "⚡ Run MongoDB Locally for Dev"
 description: "Quick guide to run MongoDB 8 in a container with persistence for dev use. Bind to all IPs, mount data, and you're good to go."
 slug: /RunMongoDBForDev
-image: https://jinnabalu.com/oio/img/mongo/MongoDevContainer.png
+image: https://vibhuvioio.com/docs/img/mongo/MongoDevContainer.png
 keywords: [mongodb, dev setup, docker, docker-compose, mongo local, mongo 8, persistence]
 ---
 
