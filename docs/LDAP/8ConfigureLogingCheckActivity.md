@@ -1,256 +1,274 @@
 ---
-sidebar_position: 8
-title: LDAP Manager Logs
-description: Step-by-step guide to enable logging, persist logs, and inspect activity history in LDAP Manager for operational visibility and auditing.
-slug: /ldap/ldap-manager/logging
+sidebar_position: 7
+title: OpenLDAP Activity Logging 
+description: Step-by-step practical guide to run a single-node OpenLDAP cluster with Docker, perform CRUD operations from the terminal, and inspect activity logs from the filesystem.
+slug: /ldap/openldap-crud-and-logs
 keywords:
-  - LDAP Manager
-  - LDAP Logging
-  - LDAP Activity Log
-  - LDAP Auditing
+  - OpenLDAP
+  - LDAP CRUD
+  - LDAP Logs
+  - slapd.log
+  - Docker OpenLDAP
 ---
+# OpenLDAP CRUD Operations and Activity Logging 
+Step-by-step practical guide to run a single-node OpenLDAP cluster with Docker, perform CRUD operations from the terminal, and inspect activity logs from the filesystem.
 
-# Logging and Activity Monitoring in LDAP Manager
-
-Learn how to configure and enable logging in LDAP Manager, persist logs, and inspect activity history for operational visibility and auditing.
-
-#### Verify Default Logging
-
-Check logs:
+#### Docker Compose – Single Node OpenLDAP
+`create a file docker-compose.yml`
+`Paste:`
 
 ```bash
-docker logs ldap-manager
+services:
+  openldap:
+    image: ghcr.io/vibhuvioio/openldap-docker/openldap:main
+    container_name: openldap-vibhuvioio
+    hostname: openldap-vibhuvioio
+    env_file:
+      - .env.vibhuvioio
+    ports:
+      - "389:389"
+      - "636:636"
+    volumes:
+      - ldap-data:/var/lib/ldap
+      - ldap-config:/etc/openldap/slapd.d
+      - ./logs:/logs
+      - ./custom-schema:/custom-schema:ro
+      - ./sample/mahabharata_data.ldif:/data/mahabharata_data.ldif:ro
+      - ./init/init-data.sh:/docker-entrypoint-initdb.d/init-data.sh:ro
+    restart: unless-stopped
+    networks:
+      - ldap-shared-network
+
+  ldap-manager:
+    image: ghcr.io/vibhuvioio/ldap-manager:latest
+    container_name: ldap-manager
+    depends_on:
+      - openldap
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./config.yml:/app/config.yml:ro
+    restart: unless-stopped
+    networks:
+      - ldap-shared-network
+
+volumes:
+  ldap-data:
+  ldap-config:
+
+networks:
+  ldap-shared-network:
+    driver: bridge
+```
+#### OpenLDAP Environment Configuration
+
+`create a file .env.vibhuvioio`
+
+`Paste:`
+```bash
+LDAP_DOMAIN=vibhuvioio.com
+LDAP_ORGANIZATION=Vibhuvioio
+LDAP_ADMIN_PASSWORD=changeme
+LDAP_CONFIG_PASSWORD=changeme
+
+INCLUDE_SCHEMAS=cosine,inetorgperson,nis
+
+ENABLE_REPLICATION=false
+SERVER_ID=1
+
+ENABLE_MONITORING=true
+```
+#### LDAP Manager Configuration (CRUD Control)
+`create a file config.yml:`
+```yml
+clusters:
+  - name: "Single Node OpenLDAP"
+    host: "openldap-vibhuvioio"
+    port: 389
+    bind_dn: "cn=Manager,dc=vibhuvioio,dc=com"
+    base_dn: "dc=vibhuvioio,dc=com"
+
+ui:
+  editable_object_classes:
+    - inetOrgPerson
+    - posixAccount
+
+forms:
+  user:
+    base_dn: "ou=People,dc=vibhuvioio,dc=com"
+    rdn_attribute: "uid"
+    object_classes:
+      - inetOrgPerson
+      - posixAccount
 ```
 
-`You should see:`
+#### Start OpenLDAP
+```bash
+docker compose up -d
+```
+#### Verify container:
+```bash
+docker ps
+```
+`Expected:`
 
-* Application startup messages
-* LDAP connection attempts
-* Errors if configuration is invalid
+- openldap-single   Up
 
-#### Enable Persistent Log Storage
-
-For anything beyond local testing, logs **must survive container restarts**.
-
-#### Run LDAP Manager with a log volume
+#### Verify LDAP Is Reachable
 `Run:`
 ```bash
-docker run -d \
-  --name ldap-manager \
-  -p 8000:8000 \
-  -v $(pwd)/config.yml:/app/config.yml:ro \
-  -v ldap-manager-logs:/app/logs \
-  ghcr.io/vibhuvioio/ldap-manager:latest
+docker exec openldap-vibhuvioio ldapsearch -x \
+-H ldap://localhost:389 \
+-D "cn=Manager,dc=vibhuvioio,dc=com" -w changeme \
+-b "dc=vibhuvioio,dc=com" dn
 ```
-
-`This creates a persistent Docker volume:`
-
-```
-ldap-manager-logs
-```
-
----
-
-#### Step 3: Configure Log Level
-
-Edit `config.yml`:
-
-```yaml
-logging:
-  level: INFO
-```
-
-Available levels:
-
-* `ERROR` – failures only
-* `INFO` – recommended default
-* `DEBUG` – verbose (not for production)
-
-Apply changes:
-
+#### CREATE – Add a User (ldapadd)
+`Run:`
 ```bash
-docker restart ldap-manager
+docker exec -i openldap-vibhuvioio ldapadd -x \
+-D "cn=Manager,dc=vibhuvioio,dc=com" -w changeme <<EOF
+dn: uid=testuser,ou=People,dc=vibhuvioio,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+cn: Test User
+sn: User
+uid: testuser
+uidNumber: 9001
+gidNumber: 1000
+homeDirectory: /home/testuser
+userPassword: test123
+EOF
 ```
+`Expected output:`
 
----
-
-## Step 4: Enable Debug Logging (Temporary)
-
-Use **DEBUG only for troubleshooting**.
-
-```yaml
-logging:
-  level: DEBUG
-```
-
-Restart container:
-
+- adding new entry "uid=testuser,ou=People,dc=vibhuvioio,dc=com"
+#### READ – Search User (ldapsearch)
+`Run:`
 ```bash
-docker restart ldap-manager
+docker exec openldap-vibhuvioio ldapsearch -x \
+-H ldap://localhost:389 \
+-D "cn=Manager,dc=vibhuvioio,dc=com" -w changeme \
+-b "ou=People,dc=vibhuvioio,dc=com" "(uid=testuser)"
+
 ```
+#### UPDATE – Modify (ldapmodify)
 
-Verify:
+`Create modify.ldif`
 
+`Paste:`
 ```bash
-docker logs ldap-manager | tail -50
+dn: uid=cli-test,ou=People,dc=vibhuvioio,dc=com
+changetype: modify
+replace: mail
+mail: cli-test@vibhuvioio.com
 ```
-
-You should see:
-
-* LDAP query execution
-* Attribute validation
-* Request routing details
-
----
-
-## Step 5: Inspect Activity Logs from the UI
-
-LDAP Manager exposes **activity history** through the web interface.
-
-### Access UI
-
-```
-http://localhost:8000
-```
-
-### Navigate to Activity Logs
-
-* Open Dashboard
-* Go to **Activity / Logs**
-* Review:
-
-  * Timestamp
-  * Operation type (Search / Add / Modify / Delete)
-  * Target DN
-  * Result (Success / Failure)
-
-This shows **what actions were triggered via the UI**.
-
----
-
-## Step 6: Identify Failed Operations
-
-Typical failure patterns:
-
-### Schema Violation
-
-* Missing required attributes
-* Invalid objectClass
-* Syntax mismatch
-
-UI:
-
-```
-Operation failed
-```
-
-Logs:
-
-```
-schema violation
-```
-
----
-
-### ACL Denial
-
-UI:
-
-```
-Insufficient access
-```
-
-Logs:
-
-```
-LDAP_INSUFFICIENT_ACCESS
-```
-
-This means your bind DN **lacks write permissions**.
-
----
-
-## Step 7: Correlate with OpenLDAP Logs
-
-LDAP Manager logs intent.
-OpenLDAP logs execution.
-
-Always correlate:
-
-| Source            | Purpose        |
-| ----------------- | -------------- |
-| LDAP Manager logs | Who did what   |
-| OpenLDAP logs     | Why it failed  |
-| `cn=Monitor`      | Runtime health |
-
-This is mandatory for real incident analysis.
-
----
-
-## Step 8: Validate Log Integrity
-
-Confirm logs persist across restarts:
-
+#### Apply the Modification
+`Run:`
 ```bash
-docker restart ldap-manager
-docker logs ldap-manager
+docker exec -i openldap-vibhuvioio ldapmodify -x \
+-D "cn=Manager,dc=vibhuvioio,dc=com" -w changeme \
+-f /dev/stdin < modify.ldif
+```
+`Expected output:`
+
+- modifying entry "uid=cli-test,ou=People,dc=vibhuvioio,dc=com"
+#### DELETE – Remove an LDAP User (ldapdelete)
+`Run:`
+```bash
+docker exec openldap-vibhuvioio ldapdelete -x \
+-D "cn=Manager,dc=vibhuvioio,dc=com" -w changeme \
+"uid=cli-test,ou=People,dc=vibhuvioio,dc=com"
+```
+`Expected output:`
+
+- deleting entry "uid=cli-test,ou=People,dc=vibhuvioio,dc=com"
+
+
+#### Where LDAP Activity Logs Are Stored
+LDAP server activity logs are mounted to the host filesystem.
+```bash
+./logs/
+```
+`Typical Log Files`
+
+- slapd.log – Active log file
+
+- slapd.log-2026-01-16.gz – Archived, rotated logs
+
+#### View Live LDAP Logs
+`Use this command to stream LDAP activity in real time:`
+
+`Run:`
+```bash
+tail -f ./logs/slapd.log
+```
+#### You will see entries for:
+
+- Bind operations
+
+- Search requests
+
+- Add operations
+
+- Modify operations
+
+- Delete operations
+
+#### Search Logs for User Activity
+
+`Find Activity for a Specific User`
+
+`Run:`
+```bash
+grep "uid=cli-test" ./logs/slapd.log
+```
+`This helps trace:`
+
+- When the user was accessed
+
+- What operation was performed
+
+#### Find Failed Login Attempts
+
+`LDAP authentication failures return error code 49.`
+```bash
+grep "err=49" ./logs/slapd.log
+```
+`Expected:`
+- (no output)
+`Explanation:`
+
+- No failed authentication attempts have occurred.
+
+
+#### View Archived LDAP Logs
+
+`Run:`
+```bash
+zcat ./logs/slapd.log-2026-01-16.gz | less
+```
+`Expected output:`
+- (no output / file not found)
+
+`Explanation:`
+
+- Log rotation has not been configured.
+
+#### Exit 
+- Enter`:wq`
+
+
+#### Use this for:
+
+- Historical audits
+
+- Incident investigation
+
+- Long-term debugging
+
+#### Stop the LDAP Cluster Cleanly
+`Run:`
+```bash
+docker compose down -v
 ```
 
-If logs reset:
-
-* Volume is not mounted
-* Container was recreated incorrectly
-
----
-
-## Common Logging Mistakes
-
-| Mistake               | Consequence              |
-| --------------------- | ------------------------ |
-| Relying only on UI    | Miss backend failures    |
-| DEBUG in production   | Performance impact       |
-| No persistent logs    | No audit trail           |
-| Ignoring ACL failures | False assumption of bugs |
-
----
-
-## What This Logging Is NOT
-
-* ❌ Compliance-grade audit logging
-* ❌ Immutable audit trail
-* ❌ Replacement for OpenLDAP auditlog overlay
-
-For compliance or security auditing, you must use:
-
-* OpenLDAP auditlog overlay
-* Centralized log storage
-* Access control reviews
-
----
-
-## Final Notes
-
-LDAP Manager logging provides:
-
-* Operational visibility
-* Change traceability
-* Faster debugging
-
-It **does not replace** proper LDAP server logging or security controls.
-
-If logging looks “broken”:
-
-* LDAP permissions are wrong
-* Or schema is invalid
-* Not the UI
-
----
-
-## Next Logical Steps
-
-* Enable OpenLDAP auditlog overlay
-* Ship logs to ELK / Loki
-* Alert on repeated failures
-* Track destructive operations
-
-If you want, I’ll write the **auditlog overlay guide next**.
