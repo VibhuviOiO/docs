@@ -229,21 +229,60 @@ export default function Home(): React.JSX.Element {
         {/* Centralised Operations */}
         <section className={styles.featureSection}>
           <div className="container">
-            <div className={styles.featureRow}>
-              <div className={styles.featureImage}>
-                <img src="/img/centralised-ops.png" alt="Centralised infrastructure operations" />
+            <div className={styles.orbitLayout}>
+              {/* Badge above title */}
+              <div className={styles.orbitBadgeWrapper}>
+                <span className={styles.orbitBadge}>AI-Powered Platform</span>
               </div>
-              <div className={styles.featureContent}>
-                <h2 className={styles.featureTitle}>Centralised Operations</h2>
-                <p className={styles.featureText}>
-                  One team. One platform. Complete visibility across your entire
-                  infrastructure — databases, containers, networking, and security
-                  managed from a single pane of glass.
-                </p>
-                <p className={styles.featureText}>
-                  No more juggling vendors or context-switching between tools.
-                  We bring everything together so your team stays focused.
-                </p>
+              
+              {/* Title at top */}
+              <h2 className={styles.orbitTitle}>Everything Connected</h2>
+              
+              {/* Left item */}
+              <div className={styles.orbitItemLeft}>
+                <div className={styles.orbitPoint}>
+                  <span className={styles.orbitPointIconHub}>◉</span>
+                  <span className={styles.orbitPointText}>Unified control plane for infrastructure</span>
+                </div>
+              </div>
+              
+              {/* Center animation */}
+              <div className={styles.orbitCenter}>
+                <div className={styles.centralisedAnim}>
+                  <div className={styles.hubCenter}>
+                    <span className={styles.hubIcon}>◉</span>
+                  </div>
+                  <div className={styles.orbitRing}>
+                    <span className={styles.orbitNode} style={{ ['--angle' as string]: '0deg' }}>◈</span>
+                    <span className={styles.orbitNode} style={{ ['--angle' as string]: '72deg' }}>◈</span>
+                    <span className={styles.orbitNode} style={{ ['--angle' as string]: '144deg' }}>◈</span>
+                    <span className={styles.orbitNode} style={{ ['--angle' as string]: '216deg' }}>◈</span>
+                    <span className={styles.orbitNode} style={{ ['--angle' as string]: '288deg' }}>◈</span>
+                  </div>
+                  <div className={styles.orbitRing2}>
+                    <span className={styles.orbitNode2} style={{ ['--angle' as string]: '36deg' }}>◇</span>
+                    <span className={styles.orbitNode2} style={{ ['--angle' as string]: '108deg' }}>◇</span>
+                    <span className={styles.orbitNode2} style={{ ['--angle' as string]: '180deg' }}>◇</span>
+                    <span className={styles.orbitNode2} style={{ ['--angle' as string]: '252deg' }}>◇</span>
+                    <span className={styles.orbitNode2} style={{ ['--angle' as string]: '324deg' }}>◇</span>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Top right item */}
+              <div className={styles.orbitItemTopRight}>
+                <div className={styles.orbitPoint}>
+                  <span className={styles.orbitPointIconInner}>◈</span>
+                  <span className={styles.orbitPointText}>AI-assisted tools built for your stack</span>
+                </div>
+              </div>
+              
+              {/* Bottom right item */}
+              <div className={styles.orbitItemBottomRight}>
+                <div className={styles.orbitPoint}>
+                  <span className={styles.orbitPointIconOuter}>◇</span>
+                  <span className={styles.orbitPointText}>On-demand products for infrastructure needs</span>
+                </div>
               </div>
             </div>
           </div>
@@ -252,21 +291,61 @@ export default function Home(): React.JSX.Element {
         {/* Conscious Operations */}
         <section className={clsx(styles.featureSection, styles.featureSectionAlt)}>
           <div className="container">
-            <div className={clsx(styles.featureRow, styles.featureRowReverse)}>
-              <div className={styles.featureImage}>
-                <img src="/img/consious-ops.png" alt="Stress-free conscious operations" />
+            <div className={styles.consciousLayout}>
+              {/* Badge above title */}
+              <div className={styles.consciousBadgeWrapper}>
+                <span className={styles.consciousBadge}>Zero Stress Ops</span>
               </div>
-              <div className={styles.featureContent}>
-                <h2 className={styles.featureTitle}>Conscious Operations</h2>
-                <p className={styles.featureText}>
-                  No firefighting. No 3 AM pages. No deployment anxiety.
-                  We design systems that are stable by default — so your
-                  on-call engineers can actually sleep.
-                </p>
-                <p className={styles.featureText}>
-                  Proactive monitoring, automated remediation, and
-                  runbooks that handle incidents before they become outages.
-                </p>
+              
+              {/* Title at top */}
+              <h2 className={styles.consciousTitle}>Sleep Soundly</h2>
+              
+              {/* Left items */}
+              <div className={styles.consciousItemLeftTop}>
+                <div className={styles.consciousPoint}>
+                  <span className={styles.consciousIconShield}>🛡</span>
+                  <span className={styles.consciousPointText}>Stable by default. No firefighting.</span>
+                </div>
+              </div>
+              
+              <div className={styles.consciousItemLeftBottom}>
+                <div className={styles.consciousPoint}>
+                  <span className={styles.consciousIconMoon}>☾</span>
+                  <span className={styles.consciousPointText}>No 3 AM pages. No deployment anxiety.</span>
+                </div>
+              </div>
+              
+              {/* Center animation */}
+              <div className={styles.consciousCenter}>
+                <div className={styles.consciousAnim}>
+                  {/* Moon/shield core */}
+                  <div className={styles.consciousCore}>
+                    <span className={styles.coreIcon}>☽</span>
+                  </div>
+                  
+                  {/* Gentle pulse rings */}
+                  <div className={styles.pulseRing1}></div>
+                  <div className={styles.pulseRing2}></div>
+                  <div className={styles.pulseRing3}></div>
+                  
+                  {/* Floating Z's */}
+                  <span className={styles.floatingZ1}>Z</span>
+                  <span className={styles.floatingZ2}>z</span>
+                  <span className={styles.floatingZ3}>Z</span>
+                  
+                  {/* Stars */}
+                  <span className={styles.star1}>✦</span>
+                  <span className={styles.star2}>✧</span>
+                  <span className={styles.star3}>✦</span>
+                </div>
+              </div>
+              
+              {/* Right item */}
+              <div className={styles.consciousItemRight}>
+                <div className={styles.consciousPoint}>
+                  <span className={styles.consciousIconCheck}>✓</span>
+                  <span className={styles.consciousPointText}>Proactive monitoring. Automated remediation.</span>
+                </div>
               </div>
             </div>
           </div>
@@ -275,45 +354,190 @@ export default function Home(): React.JSX.Element {
         {/* SLA / SLO / SLI */}
         <section className={styles.featureSection}>
           <div className="container">
-            <div className={styles.featureRow}>
-              <div className={styles.featureImage}>
-                <img src="/img/sla-slo-sli.png" alt="SLA SLO SLI reliability standards" />
+            <div className={styles.standardsLayout}>
+              {/* Badge */}
+              <div className={styles.standardsBadgeWrapper}>
+                <span className={styles.standardsBadge}>Reliability First</span>
               </div>
-              <div className={styles.featureContent}>
-                <h2 className={styles.featureTitle}>Built on Industry Standards</h2>
-                <p className={styles.featureText}>
-                  Every system we build is measured against SLAs, SLOs, and SLIs.
-                  Not just uptime numbers — real reliability targets that your
-                  business and customers can depend on.
+              
+              {/* Title */}
+              <h2 className={styles.standardsTitle}>Built on Industry Standards</h2>
+              
+              {/* Center Content with Bridge */}
+              <div className={styles.standardsCenterFull}>
+                <p className={styles.standardsLead}>
+                  Every system is measured against real reliability targets — 
+                  not just uptime numbers, but SLAs, SLOs, and SLIs that your 
+                  business can depend on.
                 </p>
-                <p className={styles.featureText}>
-                  Error budgets, latency targets, and availability guarantees —
-                  the same practices used by the best platform teams in the world.
-                </p>
+                <div className={styles.standardsFeatures}>
+                  <span className={styles.standardFeature}>Error Budgets</span>
+                  <span className={styles.standardFeature}>Latency Targets</span>
+                  <span className={styles.standardFeature}>Availability Guarantees</span>
+                </div>
+                {/* Bridge moved to left side */}
+                <div className={styles.standardsBridgeLeft}>
+                  <span className={styles.floatingStandardSmall}>SLA</span>
+                  <span className={styles.bridgeArrowSmall}>→</span>
+                  <span className={styles.floatingStandardSmall}>SLO</span>
+                  <span className={styles.bridgeArrowSmall}>→</span>
+                  <span className={styles.floatingStandardSmall}>SLI</span>
+                  <span className={styles.bridgeArrowSmall}>→</span>
+                  <span className={styles.floatingStandardSmallLong}>Uptime Observability</span>
+                </div>
               </div>
+              
+              {/* Right Animation - Targets/Goals */}
+              <div className={styles.standardsRight}>
+                <div className={styles.targetsAnim}>
+                  {/* Outer ring - larger */}
+                  <div className={styles.targetRingOuter}></div>
+                  {/* Middle ring */}
+                  <div className={styles.targetRing}></div>
+                  {/* Inner ring */}
+                  <div className={styles.targetRingInner}></div>
+                  {/* Checkmark center */}
+                  <div className={styles.targetCheck}>✓</div>
+                  
+                  {/* Inner orbit - small badges close to center, evenly spaced */}
+                  <span className={styles.orbitingBadgeInner1} style={{ ['--angle' as string]: '0deg' }}>SLA</span>
+                  <span className={styles.orbitingBadgeInner2} style={{ ['--angle' as string]: '120deg' }}>SLO</span>
+                  <span className={styles.orbitingBadgeInner3} style={{ ['--angle' as string]: '240deg' }}>SLI</span>
+                  
+                  {/* Middle orbit - at medium distance */}
+                  <span className={styles.orbitingBadgeMiddle1} style={{ ['--angle' as string]: '60deg' }}>Uptime</span>
+                  <span className={styles.orbitingBadgeMiddle2} style={{ ['--angle' as string]: '180deg' }}>Observability</span>
+                  
+                  {/* Outer orbit - furthest out */}
+                  <span className={styles.orbitingBadgeOuter1} style={{ ['--angle' as string]: '0deg' }}>99.9%</span>
+                  <span className={styles.orbitingBadgeOuter2} style={{ ['--angle' as string]: '120deg' }}>Latency</span>
+                  <span className={styles.orbitingBadgeOuter3} style={{ ['--angle' as string]: '240deg' }}>Errors</span>
+                </div>
+              </div>
+              
             </div>
           </div>
         </section>
 
-        {/* We Listen */}
-        <section className={clsx(styles.featureSection, styles.featureSectionAlt)}>
+        {/* We Listen to Your Team */}
+        <section className={clsx(styles.featureSection, styles.listenSection)}>
           <div className="container">
-            <div className={clsx(styles.featureRow, styles.featureRowReverse)}>
-              <div className={styles.featureImage}>
-                <img src="/img/we-listen-to-your-team.jpeg" alt="We listen to your team" />
+            {/* Header */}
+            <div className={styles.listenHeader}>
+              <div className={styles.listenBadgeWrapper}>
+                <span className={styles.listenBadge}>Collaborative Approach</span>
               </div>
-              <div className={styles.featureContent}>
-                <h2 className={styles.featureTitle}>We Listen to Your Team</h2>
-                <p className={styles.featureText}>
-                  Every infrastructure is different. We start by understanding
-                  your stack, your workflows, and your pain points — then build
-                  solutions that fit your team, not the other way around.
-                </p>
-                <p className={styles.featureText}>
-                  Collaborative, transparent, and always aligned with what
-                  your engineers actually need to ship faster.
-                </p>
+              <h2 className={styles.listenTitle}>We Listen to Your Team</h2>
+              <p className={styles.listenSubtitle}>
+                We turn complex conversations into simple, actionable solutions.
+              </p>
+            </div>
+
+            {/* Sound Wave Visualization */}
+            <div className={styles.listenWaveContainer}>
+              {/* Central Ear/Listening Element */}
+              <div className={styles.listenCenter}>
+                <div className={styles.earIcon}>
+                  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M32 8C20 8 12 18 12 30c0 8 4 14 10 18v6c0 4 4 6 8 6s8-2 8-6v-4c0-4-2-6-4-8-2-2-4-4-4-8 0-4 4-8 8-8s8 4 8 8" 
+                          stroke="url(#earGrad)" strokeWidth="3" strokeLinecap="round"/>
+                    <defs>
+                      <linearGradient id="earGrad" x1="12" y1="8" x2="52" y2="56">
+                        <stop stopColor="#5020e8"/>
+                        <stop offset="1" stopColor="#00bcd4"/>
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </div>
+                <span className={styles.listenLabel}>Listening</span>
               </div>
+
+              {/* Sound Waves */}
+              <div className={styles.soundWaves}>
+                <span className={styles.wave}></span>
+                <span className={styles.wave}></span>
+                <span className={styles.wave}></span>
+                <span className={styles.wave}></span>
+                <span className={styles.wave}></span>
+              </div>
+
+              {/* Team Voices - 8 positions */}
+              <div className={styles.teamVoices}>
+                {/* Top voices */}
+                <div className={clsx(styles.voice, styles.voiceTopLeft)}>
+                  <div className={styles.voiceDot}></div>
+                  <span className={styles.voiceLabel}>Tech Stack</span>
+                </div>
+                <div className={clsx(styles.voice, styles.voiceTop)}>
+                  <div className={styles.voiceDot}></div>
+                  <span className={styles.voiceLabel}>CI/CD</span>
+                </div>
+                <div className={clsx(styles.voice, styles.voiceTopRight)}>
+                  <div className={styles.voiceDot}></div>
+                  <span className={styles.voiceLabel}>GitOps</span>
+                </div>
+                
+                {/* Side voices */}
+                <div className={clsx(styles.voice, styles.voiceLeft)}>
+                  <div className={styles.voiceDot}></div>
+                  <span className={styles.voiceLabel}>Security</span>
+                </div>
+                <div className={clsx(styles.voice, styles.voiceRight)}>
+                  <div className={styles.voiceDot}></div>
+                  <span className={styles.voiceLabel}>Monitoring</span>
+                </div>
+                
+                {/* Bottom voices */}
+                <div className={clsx(styles.voice, styles.voiceBottomLeft)}>
+                  <div className={styles.voiceDot}></div>
+                  <span className={styles.voiceLabel}>Pain Points</span>
+                </div>
+                <div className={clsx(styles.voice, styles.voiceBottom)}>
+                  <div className={styles.voiceDot}></div>
+                  <span className={styles.voiceLabel}>Cost Control</span>
+                </div>
+                <div className={clsx(styles.voice, styles.voiceBottomRight)}>
+                  <div className={styles.voiceDot}></div>
+                  <span className={styles.voiceLabel}>Alert Hell</span>
+                </div>
+              </div>
+
+              {/* Connecting Lines - each badge has its own dedicated line */}
+              <svg className={styles.listenLines} viewBox="0 0 600 400" preserveAspectRatio="xMidYMid meet">
+                <defs>
+                  <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#5020e8" stopOpacity="0.9"/>
+                    <stop offset="100%" stopColor="#00bcd4" stopOpacity="0.9"/>
+                  </linearGradient>
+                </defs>
+                {/* Tech Stack line */}
+                <line className={clsx(styles.connectLine, styles.lineTechStack)} x1="300" y1="200" x2="100" y2="60" />
+                {/* CI/CD line */}
+                <line className={clsx(styles.connectLine, styles.lineCICD)} x1="300" y1="200" x2="300" y2="35" />
+                {/* GitOps line */}
+                <line className={clsx(styles.connectLine, styles.lineGitOps)} x1="300" y1="200" x2="500" y2="60" />
+                {/* Security line */}
+                <line className={clsx(styles.connectLine, styles.lineSecurity)} x1="300" y1="200" x2="35" y2="200" />
+                {/* Monitoring line */}
+                <line className={clsx(styles.connectLine, styles.lineMonitoring)} x1="300" y1="200" x2="565" y2="200" />
+                {/* Pain Points line */}
+                <line className={clsx(styles.connectLine, styles.linePainPoints)} x1="300" y1="200" x2="100" y2="340" />
+                {/* Cost Control line */}
+                <line className={clsx(styles.connectLine, styles.lineCostControl)} x1="300" y1="200" x2="300" y2="365" />
+                {/* Alert Hell line */}
+                <line className={clsx(styles.connectLine, styles.lineAlertHell)} x1="300" y1="200" x2="500" y2="340" />
+              </svg>
+            </div>
+
+            {/* Text Below Animation */}
+            <div className={styles.listenTextBlock}>
+              <p className={styles.listenTextLead}>
+                Thinking complex is simple. Making things simple is complex.
+              </p>
+              <p className={styles.listenTextBody}>
+                The possibility of complexity is higher, so we think simple. 
+                We listen to your team to understand systems.
+              </p>
             </div>
           </div>
         </section>
