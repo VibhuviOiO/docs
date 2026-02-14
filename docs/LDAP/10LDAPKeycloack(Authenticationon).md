@@ -19,7 +19,6 @@ z# Step 1 — Start OpenLDAP
 
 Use your existing OpenLDAP setup.
 
-Start:
 
 ```bash
 docker compose up -d
