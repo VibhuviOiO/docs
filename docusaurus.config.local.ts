@@ -3,11 +3,11 @@ import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
-  title: 'VibhuviOiO',
+  title: 'Infinite Operations',
   tagline: 'Experience The Operations',
   favicon: 'img/favicon.ico',
   url: 'https://vibhuvioio.com',
-  baseUrl: '/docs/',
+  baseUrl: '/',  // Changed for local development
   organizationName: 'VibhuviOiO',
   projectName: 'docs',
   trailingSlash: false,
@@ -79,7 +79,24 @@ const config: Config = {
       style: 'dark',
       links: [
         {
-          title: 'Platform',
+          title: 'Documentation',
+          items: [
+            {
+              label: 'Infrastructure',
+              to: '/docs/Infrastructure/ansible',
+            },
+            {
+              label: 'Databases',
+              to: '/docs/Databases/NoSQL/mongodb',
+            },
+            {
+              label: 'Elastic Stack',
+              to: '/docs/ElasticStack',
+            },
+          ],
+        },
+        {
+          title: 'Products',
           items: [
             {
               label: 'Docker Registry UI',
@@ -90,8 +107,8 @@ const config: Config = {
               href: 'https://vibhuvioio.com/ldap-manager/',
             },
             {
-              label: 'OpenLDAP Docker',
-              href: 'https://github.com/VibhuviOiO/openldap-docker',
+              label: 'Suchaka Status Page',
+              href: 'https://github.com/VibhuviOiO/suchaka',
             },
             {
               label: 'All Products',
@@ -100,47 +117,20 @@ const config: Config = {
           ],
         },
         {
-          title: 'Resources',
-          items: [
-            {
-              label: 'Docs',
-              to: '/docs/intro',
-            },
-            {
-              label: 'Infrastructure',
-              to: '/docs/Infrastructure/terraform',
-            },
-            {
-              label: 'Databases',
-              to: '/docs/Databases/NoSQL/mongodb',
-            },
-            {
-              label: 'Kubernetes',
-              to: '/docs/k8s-cluster/Pre-requisites',
-            },
-          ],
-        },
-        {
-          title: 'Company',
+          title: 'Community',
           items: [
             {
               label: 'GitHub',
               href: 'https://github.com/VibhuviOiO',
             },
             {
-              label: 'Blog',
-              to: '/blog',
+              label: 'Main Website',
+              href: 'https://vibhuvioio.com',
             },
           ],
         },
       ],
-      logo: {
-        alt: 'VibhuviOiO Logo',
-        src: 'img/logo.svg',
-        width: 32,
-        height: 32,
-      },
-      copyright: `© ${new Date().getFullYear()} VibhuviOiO. Open source infrastructure tools.`,
+      copyright: `Copyright © ${new Date().getFullYear()} VibhuviOiO. Open Source Infrastructure Tools.`,
     },
     prism: {
       theme: prismThemes.github,

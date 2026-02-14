@@ -5,6 +5,7 @@
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
+    "start:local": "docusaurus start --config docusaurus.config.local.ts",
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
     "deploy": "USE_SSH=true docusaurus deploy",

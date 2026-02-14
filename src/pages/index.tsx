@@ -1,234 +1,378 @@
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
+import { useState, useEffect } from 'react';
 import styles from './index.module.css';
 
-const setupGuides = [
+const products = [
   {
-    title: '🏗️ Infrastructure Foundation',
-    description: 'Self-hosted infrastructure setup with cost-effective solutions. Deploy your own services without cloud vendor lock-in.',
-    items: ['Self-hosted Email & SSO', 'LDAP Setup', 'Git Server (Gitea/GitLab)', 'Self-hosted Collaboration Tools'],
-    link: '/Infrastructure/terraform',
-    icon: '🏗️',
+    title: 'Docker Registry UI',
+    description: 'Modern web interface for managing private Docker registries with multi-registry support',
+    status: 'Production',
+    link: 'https://vibhuvioio.com/docker-registry-ui/',
+    docsLink: '/docs/Databases/NoSQL/mongodb',
   },
   {
-    title: '⚙️ Development Workflow',
-    description: 'Establish efficient development processes with self-hosted tools and proven best practices.',
-    items: ['Self-hosted Ticketing', 'Git Workflow Standards', 'Code Review Best Practices', 'AI-Assisted Development'],
-    link: '/CI-CD/CI/github-actions',
-    icon: '⚙️',
+    title: 'LDAP Manager',
+    description: 'Web-based LDAP directory management for users, groups, and organizational units',
+    status: 'Production',
+    link: 'https://vibhuvioio.com/ldap-manager/',
+    docsLink: '/docs/LDAP/intro',
   },
   {
-    title: '🎯 Technology Stack',
-    description: 'Choose the right technologies for your needs. Cost-effective, production-ready solutions.',
-    items: ['Database Selection Guide', 'Architecture Patterns', 'Self-hosted vs Cloud', 'Cost Optimization'],
-    link: '/Databases/NoSQL/mongodb',
-    icon: '🎯',
+    title: 'OpenLDAP Docker',
+    description: 'Production-ready OpenLDAP container with SSL, overlays, and sensible defaults',
+    status: 'Production',
+    link: 'https://github.com/VibhuviOiO/openldap-docker',
+    docsLink: '/docs/LDAP/intro',
   },
   {
-    title: '🚢 CI/CD Automation',
-    description: 'Build automated pipelines with self-hosted tools. Deploy faster, spend less.',
-    items: ['Self-hosted Docker Registry', 'Build Automation', 'Deployment Strategies', 'Environment Setup'],
-    link: '/harbor/harbor-setup',
-    icon: '🚢',
+    title: 'Uptime O',
+    description: 'Uptime monitoring and observability platform with dashboards and intelligent alerting',
+    status: 'In Development',
+    link: '/products',
+    docsLink: '/docs/Observability/prometheus',
   },
   {
-    title: '🛡️ Security & Scanning',
-    description: 'Implement security best practices with open-source tools. SAST, DAST, SCA without expensive licenses.',
-    items: ['Self-hosted Vault', 'Container Scanning', 'Code Security Scanning', 'Secrets Management'],
-    link: '/Security/vault',
-    icon: '🛡️',
-  },
-  {
-    title: '📈 Observability',
-    description: 'Complete monitoring stack with self-hosted solutions. Full visibility at minimal cost.',
-    items: ['Prometheus & Grafana', 'ELK Stack Setup', 'Distributed Tracing', 'Cost-effective Monitoring'],
-    link: '/Observability/prometheus',
-    icon: '📈',
+    title: 'SolrLens',
+    description: 'Apache Solr cluster monitoring with query analytics and health tracking',
+    status: 'Coming Soon',
+    link: '/products',
+    docsLink: '/docs/SearchAnalytics/elasticsearch',
   },
 ];
 
-const featuredGuides = [
+const docCategories = [
   {
-    title: '🫧 Elastic Stack',
-    description: 'Self-hosted search and analytics. Production-grade ELK stack setup.',
-    link: '/ElasticStack',
-    tags: ['Elasticsearch', 'Kibana', 'Self-hosted'],
+    title: 'Infrastructure',
+    count: '20+',
+    description: 'Terraform, Ansible, and foundational automation',
+    link: '/docs/Infrastructure/terraform',
   },
   {
-    title: '☸️ Kubernetes',
-    description: 'Build your own K8s cluster. No managed service fees.',
-    link: '/k8s-cluster/Pre-requisites',
-    tags: ['Kubernetes', 'Self-hosted', 'Cost-effective'],
+    title: 'Databases',
+    count: '40+',
+    description: 'Relational, NoSQL, and specialized stores',
+    link: '/docs/Databases/NoSQL/mongodb',
   },
   {
-    title: '🗄️ Databases',
-    description: 'MongoDB, Redis, MinIO - all self-hosted and production-ready.',
-    link: '/RunMongoDBForDev',
-    tags: ['MongoDB', 'Redis', 'Self-hosted'],
+    title: 'Kubernetes',
+    count: '15+',
+    description: 'Cluster operations and orchestration',
+    link: '/docs/k8s-cluster/Pre-requisites',
+  },
+  {
+    title: 'Security',
+    count: '10+',
+    description: 'Identity, secrets, and compliance',
+    link: '/docs/Security/vault',
+  },
+  {
+    title: 'Observability',
+    count: '25+',
+    description: 'Monitoring, logging, and tracing',
+    link: '/docs/Observability/prometheus',
+  },
+  {
+    title: 'CI/CD',
+    count: '15+',
+    description: 'Pipelines and deployment automation',
+    link: '/docs/CI-CD/CI/github-actions',
   },
 ];
 
-const bestPractices = [
-  '💰 Cost-effective solutions over expensive cloud services',
-  '🏠 Self-hosted infrastructure for full control',
-  '🤖 AI-assisted development (Claude, Amazon Q, Kimi)',
-  '⚡ Quick project setup in hours, not weeks',
-  '📚 Validated, recommended practices',
-  '🔧 No unnecessary tools - only what you need',
-];
-
-function SetupCard({title, description, items, link, icon}) {
+function ProductCard({title, description, status, link, docsLink}: {
+  title: string;
+  description: string;
+  status: string;
+  link: string;
+  docsLink: string;
+}) {
+  const isProduction = status === 'Production';
+  const isDevelopment = status === 'In Development';
+  
   return (
-    <div className={clsx('col col--4', styles.setupCard)}>
-      <div className={styles.card}>
-        <div className={styles.cardIcon}>{icon}</div>
-        <div className={styles.cardBody}>
-          <Heading as="h3" className={styles.cardTitle}>
-            {title}
-          </Heading>
-          <p className={styles.cardDescription}>{description}</p>
-          <ul className={styles.itemList}>
-            {items.map((item, idx) => (
-              <li key={idx}>{item}</li>
-            ))}
-          </ul>
-          <Link to={link} className={styles.cardLink}>
-            View Guide →
-          </Link>
-        </div>
+    <div className={styles.productCard}>
+      <div className={styles.productHeader}>
+        <h3 className={styles.productTitle}>{title}</h3>
+        <span className={clsx(
+          styles.statusBadge,
+          isProduction && styles.statusProduction,
+          isDevelopment && styles.statusDevelopment
+        )}>
+          {status}
+        </span>
+      </div>
+      <p className={styles.productDescription}>{description}</p>
+      <div className={styles.productActions}>
+        <a href={link} className={styles.productLink} target="_blank" rel="noopener noreferrer">
+          Website
+        </a>
+        <Link to={docsLink} className={styles.docsLink}>
+          Documentation
+        </Link>
       </div>
     </div>
   );
 }
 
-function GuideCard({title, description, link, tags}) {
+function DocCategory({title, count, description, link}: {
+  title: string;
+  count: string;
+  description: string;
+  link: string;
+}) {
   return (
-    <div className={clsx('col col--4', styles.guideCard)}>
-      <Link to={link} className={styles.guideLink}>
-        <div className={styles.guideCardInner}>
-          <Heading as="h4" className={styles.guideTitle}>
-            {title}
-          </Heading>
-          <p className={styles.guideDescription}>{description}</p>
-          <div className={styles.tags}>
-            {tags.map((tag, idx) => (
-              <span key={idx} className={styles.tag}>
-                {tag}
-              </span>
-            ))}
-          </div>
-        </div>
-      </Link>
-    </div>
-  );
-}
-
-function HomepageHeader() {
-  const {siteConfig} = useDocusaurusContext();
-  return (
-    <header className={styles.heroBanner}>
-      <div className="container">
-        <Heading as="h1" className={styles.heroTitle}>
-          Self-Hosted Infrastructure Guides
-        </Heading>
-        <p className={styles.heroSubtitle}>
-          Cost-Effective, Production-Ready Solutions
-        </p>
-        <p className={styles.heroDescription}>
-          Build your entire tech infrastructure with self-hosted, open-source tools.
-          Validated practices for setting up production systems without expensive cloud services.
-          Deploy what you need, when you need it.
-        </p>
-        <div className={styles.buttons}>
-          <Link
-            className="button button--primary button--lg"
-            to="#guides">
-            Start Building
-          </Link>
-          <Link
-            className="button button--secondary button--lg"
-            to="/ElasticStack">
-            View Tutorials
-          </Link>
-        </div>
+    <Link to={link} className={styles.categoryCard}>
+      <div className={styles.categoryHeader}>
+        <h3 className={styles.categoryTitle}>{title}</h3>
+        <span className={styles.categoryCount}>{count}</span>
       </div>
-    </header>
+      <p className={styles.categoryDescription}>{description}</p>
+    </Link>
   );
 }
 
-export default function Home(): JSX.Element {
-  const {siteConfig} = useDocusaurusContext();
+const rotatingPhrases = [
+  'Infrastructure Boring.',
+  'Deployments Seamless.',
+  'Operations Invisible.',
+  'Monitoring Effortless.',
+];
+
+function RotatingText() {
+  const [phraseIndex, setPhraseIndex] = useState(0);
+  const [charCount, setCharCount] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    const currentPhrase = rotatingPhrases[phraseIndex];
+
+    if (!isDeleting && charCount < currentPhrase.length) {
+      const timeout = setTimeout(() => setCharCount(charCount + 1), 150);
+      return () => clearTimeout(timeout);
+    }
+
+    if (!isDeleting && charCount === currentPhrase.length) {
+      const timeout = setTimeout(() => setIsDeleting(true), 3500);
+      return () => clearTimeout(timeout);
+    }
+
+    if (isDeleting && charCount > 0) {
+      const timeout = setTimeout(() => setCharCount(charCount - 1), 60);
+      return () => clearTimeout(timeout);
+    }
+
+    if (isDeleting && charCount === 0) {
+      setIsDeleting(false);
+      setPhraseIndex((prev) => (prev + 1) % rotatingPhrases.length);
+    }
+  }, [charCount, isDeleting, phraseIndex]);
+
+  const currentPhrase = rotatingPhrases[phraseIndex];
+
+  return (
+    <span className={styles.heroHighlight}>
+      {currentPhrase.slice(0, charCount)}
+      <span className={styles.cursor}>|</span>
+    </span>
+  );
+}
+
+export default function Home(): React.JSX.Element {
   return (
     <Layout
-      title={`${siteConfig.title}`}
-      description="Self-hosted infrastructure guides for cost-effective, production-ready systems">
-      <HomepageHeader />
+      title="Open Source Infrastructure Tools | Self-Hosted DevOps & SRE"
+      description="VibhuviOiO builds production-grade open source infrastructure tools for self-hosted deployments, monitoring, and operations. 140+ guides, 5 products, battle-tested in production.">
+
+      {/* Hero Section */}
+      <header className={styles.hero}>
+        <div className="container">
+          <div className={styles.heroContent}>
+            <Heading as="h1" className={styles.heroTitle}>
+              We Make Your
+              <RotatingText />
+            </Heading>
+            <p className={styles.heroSubtitle}>We handle the ops. You ship the code.</p>
+            <p className={styles.heroLead}>
+              Production-ready open source tools and battle-tested automation
+              for teams that want infrastructure they never have to think about.
+            </p>
+            <div className={styles.heroActions}>
+              <Link to="/products" className={styles.primaryButton}>
+                Explore Products
+              </Link>
+              <Link to="/docs/intro" className={styles.secondaryButton}>
+                Read the Docs
+              </Link>
+            </div>
+          </div>
+          <div className={styles.heroStats}>
+            <div className={styles.stat}>
+              <span className={styles.statValue}>140+</span>
+              <span className={styles.statLabel}>Guides</span>
+            </div>
+            <div className={styles.stat}>
+              <span className={styles.statValue}>5</span>
+              <span className={styles.statLabel}>Products</span>
+            </div>
+            <div className={styles.stat}>
+              <span className={styles.statValue}>100%</span>
+              <span className={styles.statLabel}>Open Source</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
       <main>
-        <section className={styles.principles}>
+        {/* Centralised Operations */}
+        <section className={styles.featureSection}>
           <div className="container">
-            <div className="text--center margin-bottom--lg">
-              <Heading as="h2">Our Approach</Heading>
-            </div>
-            <div className={styles.principleGrid}>
-              {bestPractices.map((practice, idx) => (
-                <div key={idx} className={styles.principleItem}>
-                  {practice}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section id="guides" className={styles.setup}>
-          <div className="container">
-            <div className="text--center margin-bottom--xl">
-              <Heading as="h2">🎯 Complete Setup Guides</Heading>
-              <p className={styles.sectionSubtitle}>
-                Everything you need to build production infrastructure yourself
-              </p>
-            </div>
-            <div className="row">
-              {setupGuides.map((props, idx) => (
-                <SetupCard key={idx} {...props} />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className={styles.featured}>
-          <div className="container">
-            <div className="text--center margin-bottom--lg">
-              <Heading as="h2">📚 Featured Tutorials</Heading>
-              <p className={styles.sectionSubtitle}>
-                Step-by-step guides for self-hosting production systems
-              </p>
-            </div>
-            <div className="row">
-              {featuredGuides.map((props, idx) => (
-                <GuideCard key={idx} {...props} />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className={styles.cta}>
-          <div className="container">
-            <div className={styles.ctaBox}>
-              <Heading as="h2">Ready to Build Your Infrastructure?</Heading>
-              <p>
-                Follow our validated guides to set up production-ready infrastructure
-                with cost-effective, self-hosted solutions. No expensive cloud bills.
-              </p>
-              <div className={styles.buttons}>
-                <Link
-                  className="button button--primary button--lg"
-                  to="/Infrastructure/terraform">
-                  Get Started
-                </Link>
+            <div className={styles.featureRow}>
+              <div className={styles.featureImage}>
+                <img src="/img/centralised-ops.png" alt="Centralised infrastructure operations" />
               </div>
+              <div className={styles.featureContent}>
+                <h2 className={styles.featureTitle}>Centralised Operations</h2>
+                <p className={styles.featureText}>
+                  One team. One platform. Complete visibility across your entire
+                  infrastructure — databases, containers, networking, and security
+                  managed from a single pane of glass.
+                </p>
+                <p className={styles.featureText}>
+                  No more juggling vendors or context-switching between tools.
+                  We bring everything together so your team stays focused.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Conscious Operations */}
+        <section className={clsx(styles.featureSection, styles.featureSectionAlt)}>
+          <div className="container">
+            <div className={clsx(styles.featureRow, styles.featureRowReverse)}>
+              <div className={styles.featureImage}>
+                <img src="/img/consious-ops.png" alt="Stress-free conscious operations" />
+              </div>
+              <div className={styles.featureContent}>
+                <h2 className={styles.featureTitle}>Conscious Operations</h2>
+                <p className={styles.featureText}>
+                  No firefighting. No 3 AM pages. No deployment anxiety.
+                  We design systems that are stable by default — so your
+                  on-call engineers can actually sleep.
+                </p>
+                <p className={styles.featureText}>
+                  Proactive monitoring, automated remediation, and
+                  runbooks that handle incidents before they become outages.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* SLA / SLO / SLI */}
+        <section className={styles.featureSection}>
+          <div className="container">
+            <div className={styles.featureRow}>
+              <div className={styles.featureImage}>
+                <img src="/img/sla-slo-sli.png" alt="SLA SLO SLI reliability standards" />
+              </div>
+              <div className={styles.featureContent}>
+                <h2 className={styles.featureTitle}>Built on Industry Standards</h2>
+                <p className={styles.featureText}>
+                  Every system we build is measured against SLAs, SLOs, and SLIs.
+                  Not just uptime numbers — real reliability targets that your
+                  business and customers can depend on.
+                </p>
+                <p className={styles.featureText}>
+                  Error budgets, latency targets, and availability guarantees —
+                  the same practices used by the best platform teams in the world.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* We Listen */}
+        <section className={clsx(styles.featureSection, styles.featureSectionAlt)}>
+          <div className="container">
+            <div className={clsx(styles.featureRow, styles.featureRowReverse)}>
+              <div className={styles.featureImage}>
+                <img src="/img/we-listen-to-your-team.jpeg" alt="We listen to your team" />
+              </div>
+              <div className={styles.featureContent}>
+                <h2 className={styles.featureTitle}>We Listen to Your Team</h2>
+                <p className={styles.featureText}>
+                  Every infrastructure is different. We start by understanding
+                  your stack, your workflows, and your pain points — then build
+                  solutions that fit your team, not the other way around.
+                </p>
+                <p className={styles.featureText}>
+                  Collaborative, transparent, and always aligned with what
+                  your engineers actually need to ship faster.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Products Section */}
+        <section className={styles.section}>
+          <div className="container">
+            <div className={styles.sectionHeader}>
+              <h2 className={styles.sectionTitle}>Products</h2>
+              <p className={styles.sectionDescription}>
+                Open source tools that solve real infrastructure problems — ready to deploy today
+              </p>
+            </div>
+            <div className={styles.productsList}>
+              {products.map((props, idx) => (
+                <ProductCard key={idx} {...props} />
+              ))}
+            </div>
+            <div className={styles.sectionAction}>
+              <Link to="/products" className={styles.textLink}>
+                View all products
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Documentation Section */}
+        <section className={clsx(styles.section, styles.sectionAlt)}>
+          <div className="container">
+            <div className={styles.sectionHeader}>
+              <h2 className={styles.sectionTitle}>Documentation</h2>
+              <p className={styles.sectionDescription}>
+                Battle-tested guides from real production environments — no theory, just what works
+              </p>
+            </div>
+            <div className={styles.categoriesGrid}>
+              {docCategories.map((props, idx) => (
+                <DocCategory key={idx} {...props} />
+              ))}
+            </div>
+            <div className={styles.sectionAction}>
+              <Link to="/docs/intro" className={styles.primaryButton}>
+                Explore Documentation
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Bottom CTA */}
+        <section className={styles.bottomCta}>
+          <div className="container">
+            <div className={styles.bottomCtaContent}>
+              <h2>Ready to Simplify Your Infrastructure?</h2>
+              <p>
+                Everything is open source. Start deploying in minutes, not weeks.
+              </p>
+              <Link to="/docs/intro" className={styles.primaryButton}>
+                Get Started
+              </Link>
             </div>
           </div>
         </section>
