@@ -268,7 +268,7 @@ username: testuser
 password: password
 ```
 
-Successful login confirms:
+`Successful login confirms:`
 
 ✔ LDAP authentication
 
