@@ -200,6 +200,8 @@ Create the **initial local admin** (required once).
 
 Use a strong password.
 
+`example : VaultMeshAdmin#2026`
+
 ---
 
 #### Configure LDAP Authentication in Portainer
