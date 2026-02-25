@@ -176,9 +176,35 @@ docker exec -i openldap-vibhuvioio ldapadd \
 
 ---
 
+#### Generate SSHA hash
+
+`Run:`
+```bash
+docker exec -it openldap-vibhuvioio slappasswd
+```
+`You will see:`
+
+New password:
+
+Now TYPE:
+
+password
+
+Press Enter.
+
+`Then:`
+
+Re-enter password:
+
+Type again:
+
+password
+
 #### Create LDAP User (Terminal Only)
 
 `Create a file testuser.ldif:`
+
+`Paste the SSHA hash generated above into the userPassword field.`
 
 `Paste:`
 
@@ -195,7 +221,7 @@ uidNumber: 10001
 gidNumber: 10001
 homeDirectory: /home/testuser
 mail: testuser@vibhuvioio.com
-userPassword: password
+userPassword: paste here
 ```
 
 #### Import:
